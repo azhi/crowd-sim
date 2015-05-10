@@ -1,0 +1,6 @@
+<svg height="400" width="220">
+  <line x1="10" y1="0" x2="10" y2="400" style="stroke:rgb(0,0,0)" x-csim-class="wall" />
+  <line x1="210" y1="0" x2="210" y2="400" style="stroke:rgb(0,0,0)" x-csim-class="wall" />
+  <rect x="10" y="370" width="200" height="30" style="fill:rgb(0,255,0);" x-csim-class="spawn-area" x-csim-id="0" />
+  <rect x="105" y="0" width="10" height="10" style="fill:rgb(0,0,255);" x-csim-class="target-area" x-csim-last="true"/>
+</svg>

@@ -1,0 +1,9 @@
+[package]
+name = "core"
+version = "0.0.1"
+authors = ["azhi <astzhe@gmail.com>"]
+
+[dependencies]
+anymap = "0.10.3"
+log = "0.3"
+env_logger = "0.3"
