@@ -7,7 +7,8 @@ module Sections
     SCENE_SECTION = 0x01
     SCENE_ELEMENTS = {
       'wall' => 0x01, 'spawn-area' => 0x02, 'target-area' => 0x03,
-      'width' => 0x11, 'height' => 0x12, 'scale' => 0x13
+      'width' => 0x11, 'height' => 0x12, 'scale' => 0x13,
+      'file_name' => 0xFF
     }
     SCENE_ELEMENTS_TEMPLATES = {
       # x0 y0 x1 y1
@@ -18,14 +19,19 @@ module Sections
       'target-area' => 'S>S>S>S>C',
 
       'width' => 'S>', 'height' => 'S>',
-      'scale' => 'E'
+      'scale' => 'E',
+      'file_name' => 'S>A:len:'
     }
 
     field name: 'file', type: :custom, parser: :read_scene_file
     field name: 'scale', type: :float
 
     def to_config
-      config = get_data('geometry').inject("") do |geom_conf, (geom_el_type, geom_el_data)|
+      file_name = get_data('scene_file')
+      file_name_template = SCENE_ELEMENTS_TEMPLATES['file_name'].sub(':len:', file_name.size.to_s)
+      config = [SCENE_SECTION, SCENE_ELEMENTS['file_name'], file_name.size, file_name].pack(CONFIG_ITEM_TEMPLATE_PREFIX + file_name_template)
+
+      config += get_data('geometry').inject("") do |geom_conf, (geom_el_type, geom_el_data)|
         data = [SCENE_SECTION, SCENE_ELEMENTS[geom_el_type], geom_el_data].flatten
         geom_conf + data.pack(CONFIG_ITEM_TEMPLATE_PREFIX + SCENE_ELEMENTS_TEMPLATES[geom_el_type])
       end
@@ -35,6 +41,8 @@ module Sections
     end
 
     def read_scene_file(file, &blc)
+      data['scene_file'] = file
+
       scene_data = Crack::XML.parse(File.read(file))['svg']
       geometry = []
       geometry << ['width', scene_data['width'].to_i]

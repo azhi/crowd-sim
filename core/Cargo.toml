@@ -4,6 +4,12 @@ version = "0.0.1"
 authors = ["azhi <astzhe@gmail.com>"]
 
 [dependencies]
-anymap = "0.10.3"
 log = "0.3"
 env_logger = "0.3"
+rand = "0.3"
+linked-list = "0.0.2"
+time = "0.1"
+
+[dependencies.anymap]
+version = "0.10.3"
+features = ["clone"]
