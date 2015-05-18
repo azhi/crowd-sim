@@ -52,7 +52,8 @@ impl Simulation {
         let mut total_forces_for_person = Vec::new();
         total_forces_for_person.reserve(self.scene.people.len());
         for person in self.scene.people.iter() {
-            let total_force = self.forces.total_force_for_person(person, &self.scene);
+            let mut total_force = self.forces.total_force_for_person(person, &self.scene);
+            total_force = total_force / self.scene.scale;
             total_forces_for_person.push(total_force);
         }
         for (person, total_force) in self.scene.people.iter_mut().zip(total_forces_for_person.iter()) {

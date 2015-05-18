@@ -3,13 +3,13 @@ scene do
   # svg file with scene geometry
   file '/home/azhi/develop/crowd-sim/resources/corridor/scene.svg'
   # file scale (meters per pixel)
-  scale 0.03
+  scale 0.05
 end
 
 # simulation time description
 time do
   # time to end simulation (Float::INFINITY for infinite one), seconds
-  end_time 120.0
+  end_time 20.0
   # simulation clock tick time
   tick 0.1
 end
@@ -27,11 +27,11 @@ forces do
   # force that pushes man to his target
   target do
     # speed distribution
-    speed{ distribution 'normal'; mean 1.5; std_deviation 1.4 }
+    speed{ distribution 'normal'; mean 1.5; std_deviation 0.3 }
   end
   # force that pushes man apart from each other
   repulsion do
     # force coeff distribution
-    coeff{ distribution 'normal'; mean 0.3; std_deviation 0.7 }
+    coeff{ distribution 'normal'; mean 10.3; std_deviation 0.7 }
   end
 end

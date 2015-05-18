@@ -7,6 +7,7 @@ use std::ops::Deref;
 
 macro_rules! trait_enum {
     (enum $name:ident : $_trait:ident { $($var:ident($ty:ty)),* }) => {
+        #[derive(Debug)]
         pub enum $name {
             $(
                 $var($ty),
@@ -80,9 +81,12 @@ impl Forces {
     }
 
     pub fn generate_person_forces_param(&self) -> PersonForcesParams {
-        PersonForcesParams{
+        let mut res = PersonForcesParams{
             target_speed: ::utils::distributions::generate(&self.target_speed),
             repulsion_coeff: ::utils::distributions::generate(&self.repulsion_coeff),
-        }
+        };
+        res.target_speed = res.target_speed.max(0.1);
+        res.repulsion_coeff = res.repulsion_coeff.max(0.01);
+        res
     }
 }

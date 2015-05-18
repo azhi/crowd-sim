@@ -7,6 +7,7 @@ use ::simulation::scene::Scene;
 use ::configuration::DistributionValue;
 use ::utils::linelg::Vector;
 
+#[derive(Debug)]
 pub struct TargetForce;
 
 impl Forceable for TargetForce {

@@ -1,0 +1,5 @@
+<svg height="500" width="500">
+  <rrect x="0" y="0" width="500" height="500" style="fill:rgb(192,192,192)" />
+  <ellipse cx="250" cy="250" rx="230" ry="150" style="stroke:black;stroke-width:20px;fill:white" />
+  <line x1="250" y1="250" x2="250" y2="100" style="stroke:black;stroke-width:20px" />
+</svg>

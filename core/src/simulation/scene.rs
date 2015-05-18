@@ -38,10 +38,10 @@ pub struct Area {
 }
 
 impl Area {
-    fn middle(&self) -> Point {
+    fn random_inside(&self) -> Point {
         Point::new(
-            (self.p1.x - self.p0.x) / 2_f64,
-            (self.p1.y - self.p0.y) / 2_f64
+            ::utils::distributions::generate_uniform(self.p0.x, self.p1.x),
+            ::utils::distributions::generate_uniform(self.p0.y, self.p1.y)
         )
     }
 }
@@ -132,11 +132,11 @@ impl Scene {
         match coordinates {
             Some(point) => {
                 let new_person = Person{
-                    coordinates: point,
-                    heading: 0_f64,
+                    coordinates: point.clone(),
+                    heading: -90_f64.to_radians(),
                     path_id: path.id,
                     current_target_index: 0,
-                    current_target_point: path.target_areas[0].middle(),
+                    current_target_point: path.target_areas[0].random_inside(),
                     forces_params: forces.generate_person_forces_param()
                 };
                 self.people.push_back(new_person);
@@ -166,7 +166,7 @@ impl Scene {
                         person.current_target_index += 1;
                         let ref path = self.paths[person.path_id as usize];
                         if (person.current_target_index as usize) < path.target_areas.len() {
-                            person.current_target_point = path.target_areas[person.current_target_index as usize].middle();
+                            person.current_target_point = path.target_areas[person.current_target_index as usize].random_inside();
                             // next
                             true
                         } else {
