@@ -13,13 +13,14 @@ use ::simulation::person::Person;
 pub struct Output {
     scene_file_name: String,
     scene_scale: f64,
+    ticks_without_density: u32,
 }
 
 impl Output {
     pub fn new(configuration: &AnyMap) -> Output {
         let scene_scale = config!(configuration, SceneScale);
         let scene_filename = config!(configuration, SceneFilename);
-        Output{ scene_file_name: scene_filename, scene_scale: scene_scale }
+        Output{ scene_file_name: scene_filename, scene_scale: scene_scale, ticks_without_density: 0 }
     }
 
     pub fn send_init(&self) {
@@ -28,10 +29,18 @@ impl Output {
         self.write_f64(&mut out, self.scene_scale);
     }
 
-    pub fn dump_state(&self, simulation: &Simulation) {
+    pub fn dump_state(&mut self, simulation: &Simulation) {
         let mut out = ::std::io::stdout();
         let current_time = simulation.time.current_time;
         self.write_f64(&mut out, current_time);
+        if self.ticks_without_density == 0 {
+            self.write_u8(&mut out, 1_u8);
+            self.dump_density_map(&mut out, &simulation.scene.get_density_map());
+            self.ticks_without_density = (1_f64 / simulation.time.tick).ceil() as u32;
+        } else {
+            self.write_u8(&mut out, 0_u8);
+            self.ticks_without_density -= 1;
+        }
         self.dump_people_location(&mut out, &simulation.scene.people);
     }
 
@@ -42,6 +51,35 @@ impl Output {
             self.write_u16(out, person.coordinates.x.round() as u16);
             self.write_u16(out, person.coordinates.y.round() as u16);
             self.write_f64(out, person.heading);
+        }
+    }
+
+    fn dump_density_map(&self, out: &mut Write, density_map: &Vec<Vec<f64>>) {
+        const MIN_DENSITY_TRESHOLD : f64 = 5.0;
+        let mut min_non_zero = ::std::f64::MAX;
+        let mut max = ::std::f64::MIN;
+        let mut values_to_write = Vec::new();
+        for i in (0 .. density_map.len()) {
+            for j in (0 .. density_map[i].len()) {
+                let value = density_map[i][j];
+                if value > MIN_DENSITY_TRESHOLD {
+                    values_to_write.push((j, i, value));
+                }
+
+                if value > max {
+                    max = value;
+                };
+                if value != 0_f64 && value < min_non_zero {
+                    min_non_zero = value;
+                }
+            }
+        };
+
+        self.write_u32(out, values_to_write.len() as u32);
+        for &(x, y, value) in values_to_write.iter() {
+            self.write_u16(out, x as u16);
+            self.write_u16(out, y as u16);
+            self.write_f64(out, value);
         }
     }
 

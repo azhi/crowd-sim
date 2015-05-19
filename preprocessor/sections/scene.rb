@@ -15,8 +15,8 @@ module Sections
       'wall' => 'S>S>S>S>',
       # x0 y0 x1 y1 id
       'spawn-area' => 'S>S>S>S>C',
-      # x0 y0 x1 y1 seq_no(7bit)|last(1bit)
-      'target-area' => 'S>S>S>S>C',
+      # x0 y0 x1 y1 id seq_no(7bit)|last(1bit)
+      'target-area' => 'S>S>S>S>CC',
 
       'width' => 'S>', 'height' => 'S>',
       'scale' => 'E',
@@ -67,6 +67,7 @@ module Sections
           'target-area',
           [target['x'].to_i, target['y'].to_i,
            target['x'].to_i + target['width'].to_i, target['y'].to_i + target['height'].to_i,
+           target['x_csim_id'].to_i,
            (target['x_csim_seq_no'].to_i << 1) | (target['x_csim_last'] == 'true' ? 1 : 0)]
         ]
       end

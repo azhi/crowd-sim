@@ -40,6 +40,10 @@ void sdl_set_svg_background(struct SDLData* sdl_data, const char* file)
   SDL_SetWindowSize(sdl_data->window, dst.w, dst.h);
   sdl_data->scene_width = dst.w;
   sdl_data->scene_height = dst.h;
+
+  int btpp = 4;
+  sdl_data->density_color_map = malloc(sdl_data->scene_width * sdl_data->scene_height * btpp);
+  sdl_clear_density(sdl_data);
 }
 
 void sdl_load_person_svg(struct SDLData* sdl_data, const char* file, double person_svg_scale, double scene_scale)
@@ -77,6 +81,50 @@ void sdl_draw_person(struct SDLData* sdl_data, int x, int y, double heading)
   SDL_RenderCopy(sdl_data->renderer, texture, NULL, &dst);
 }
 
+void sdl_set_density(struct SDLData* sdl_data, int x, int y, double density)
+{
+  const double DENSITY_MIN_THRESHOLD = 5.0;
+  const double DENSITY_MAX_THRESHOLD = 10.0;
+  density = fmin(density, DENSITY_MAX_THRESHOLD) - DENSITY_MIN_THRESHOLD;
+  unsigned char white_channel = (unsigned char) 255 - floor(density * 255 / (DENSITY_MAX_THRESHOLD - DENSITY_MIN_THRESHOLD));
+  sdl_data->density_color_map[y * sdl_data->scene_width + x] = 0xaaff0000 | (white_channel << 8) | white_channel;
+}
+
+void sdl_draw_density(struct SDLData* sdl_data)
+{
+  Uint32 rmask = 0x00ff0000;
+  Uint32 gmask = 0x0000ff00;
+  Uint32 bmask = 0x000000ff;
+  Uint32 amask = 0xff000000;
+  int bpp = 32;
+  int btpp = 4;
+  int stride = sdl_data->scene_width * btpp;
+
+  SDL_Surface *sdl_surface = SDL_CreateRGBSurfaceFrom((void *) sdl_data->density_color_map, sdl_data->scene_width, sdl_data->scene_height,
+    bpp, stride, rmask, gmask, bmask, amask);
+
+  if (sdl_surface == NULL)
+    sdl_error("SDL_CreateRGBSurfaceFrom");
+
+  SDL_Texture *tex = SDL_CreateTextureFromSurface(sdl_data->renderer, sdl_surface);
+
+  if (tex == NULL)
+    sdl_error("SDL_CreateTextureFromSurface");
+
+  SDL_FreeSurface(sdl_surface);
+
+  sdl_draw_texture(sdl_data, tex);
+  SDL_DestroyTexture(tex);
+}
+
+void sdl_clear_density(struct SDLData* sdl_data)
+{
+  for (int i = 0; i < sdl_data->scene_height; i++)
+    for (int j = 0; j < sdl_data->scene_width; j++) {
+      sdl_data->density_color_map[i * sdl_data->scene_width + j] = 0x00000000;
+    }
+}
+
 void sdl_clr(struct SDLData* sdl_data)
 {
   SDL_RenderClear(sdl_data->renderer);
@@ -89,6 +137,7 @@ void sdl_update(struct SDLData* sdl_data)
 
 void sdl_shutdown(struct SDLData* sdl_data)
 {
+  free(sdl_data->density_color_map);
   for (int i = 0; i < 360; i++) {
     SDL_DestroyTexture(sdl_data->person_textures[i]);
   }
@@ -191,7 +240,6 @@ SDL_Texture* sdl_load_svg(struct SDLData* sdl_data, const char* file, double sca
   SDL_SetColorKey(sdl_surface, SDL_TRUE, SDL_MapRGB(sdl_surface->format, 192, 192, 192));
 
   SDL_Texture *tex = SDL_CreateTextureFromSurface(sdl_data->renderer, sdl_surface);
-  SDL_SetTextureBlendMode(tex, SDL_BLENDMODE_BLEND);
 
   if (tex == NULL)
     sdl_error("SDL_CreateTextureFromSurface");

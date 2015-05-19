@@ -48,6 +48,7 @@ pub struct SceneSpawnAreas(pub Vec<SceneSpawnArea>);
 #[derive(Debug,Clone)]
 pub struct SceneTargetArea {
     pub x0 : u16, pub y0 : u16, pub x1 : u16, pub y1: u16,
+    pub id: u8,
     pub sequence_no: u8,
     pub last: bool
 }
@@ -143,6 +144,7 @@ fn parse_scene_item(config: &mut AnyMap, file: &mut Read, buf : &mut [u8]) {
         },
         0x03 => {
             let (x0, y0, x1, y1) = parse_coordinates(file, buf);
+            let id = parse_u8(file, buf);
             let seq_no_and_last = parse_u8(file, buf);
             let last = seq_no_and_last & 0x01 == 0x01;
             let seq_no = (seq_no_and_last & 0xFE) >> 1;
@@ -155,9 +157,9 @@ fn parse_scene_item(config: &mut AnyMap, file: &mut Read, buf : &mut [u8]) {
                 None => Vec::new()
             };
 
-            target_areas_vec.push(SceneTargetArea{ x0: x0, y0: y0, x1: x1, y1: y1, sequence_no: seq_no, last: last});
+            target_areas_vec.push(SceneTargetArea{ x0: x0, y0: y0, x1: x1, y1: y1, id: id, sequence_no: seq_no, last: last});
             config.insert(SceneTargetAreas(target_areas_vec));
-            debug!("Parsed SceneTargetArea: {} {} {} {} {} {}", x0, y0, x1, y1, seq_no, last);
+            debug!("Parsed SceneTargetArea: {} {} {} {} {} {} {}", x0, y0, x1, y1, id, seq_no, last);
         },
         0x11 => {
             let scene_width = parse_u16(file, buf);

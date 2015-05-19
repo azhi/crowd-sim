@@ -10,6 +10,7 @@
 
 void controller_error(const char* msg);
 int wait_for_stdin();
+unsigned char controller_read_byte();
 unsigned short controller_read_short();
 unsigned long controller_read_long();
 char* controller_read_string();
@@ -45,11 +46,25 @@ void controller_main_loop(struct ControllerData* controller_data)
   while (!feof(stdin)) {
     wait_for_stdin();
     double data_time = controller_read_double();
-    long people_count = controller_read_long();
 
     sdl_clr(&controller_data->sdl_data);
+
     sdl_draw_texture(&controller_data->sdl_data, controller_data->sdl_data.background);
 
+    unsigned char has_densities = controller_read_byte();
+    if (has_densities) {
+      long densities_count = controller_read_long();
+      sdl_clear_density(&controller_data->sdl_data);
+      for (long i = 0; i < densities_count; i++) {
+          int x = controller_read_short();
+          int y = controller_read_short();
+          double density = controller_read_double();
+          sdl_set_density(&controller_data->sdl_data, x, y, density);
+        }
+    }
+    sdl_draw_density(&controller_data->sdl_data);
+
+    long people_count = controller_read_long();
     for (long i = 0; i < people_count; i++) {
       short person_x = controller_read_short();
       short person_y = controller_read_short();
@@ -89,6 +104,16 @@ char* controller_read_string()
   if (ret == 0)
     controller_error("Error while reading from stdin.");
   buf[string_length] = '\0';
+  return buf;
+}
+
+unsigned char controller_read_byte()
+{
+  wait_for_stdin();
+  unsigned char buf;
+  int ret = fread(&buf, 1, 1, stdin);
+  if (ret == 0)
+    controller_error("Error while reading from stdin.");
   return buf;
 }
 

@@ -1,0 +1,38 @@
+<svg height="1000" width="800">
+  <rect x="0" y="0" width="800" height="1000" style="fill:white" />
+
+  <line x1="250" y1="0" x2="250" y2="200" style="stroke:rgb(0,0,0)" x-csim-class="wall" />
+  <line x1="10" y1="200" x2="250" y2="200" style="stroke:rgb(0,0,0)" x-csim-class="wall" />
+
+  <line x1="550" y1="0" x2="550" y2="200" style="stroke:rgb(0,0,0)" x-csim-class="wall" />
+  <line x1="550" y1="200" x2="790" y2="200" style="stroke:rgb(0,0,0)" x-csim-class="wall" />
+
+  <line x1="550" y1="500" x2="550" y2="1000" style="stroke:rgb(0,0,0)" x-csim-class="wall" />
+  <line x1="550" y1="500" x2="790" y2="500" style="stroke:rgb(0,0,0)" x-csim-class="wall" />
+
+  <line x1="250" y1="500" x2="250" y2="1000" style="stroke:rgb(0,0,0)" x-csim-class="wall" />
+  <line x1="10" y1="500" x2="250" y2="500" style="stroke:rgb(0,0,0)" x-csim-class="wall" />
+
+  <line x1="280" y1="310" x2="360" y2="310" style="stroke:rgb(0,0,0)" x-csim-class="wall" />
+  <line x1="360" y1="310" x2="360" y2="390" style="stroke:rgb(0,0,0)" x-csim-class="wall" />
+  <line x1="280" y1="390" x2="360" y2="390" style="stroke:rgb(0,0,0)" x-csim-class="wall" />
+  <line x1="280" y1="310" x2="280" y2="390" style="stroke:rgb(0,0,0)" x-csim-class="wall" />
+
+  <line x1="440" y1="310" x2="520" y2="310" style="stroke:rgb(0,0,0)" x-csim-class="wall" />
+  <line x1="520" y1="310" x2="520" y2="390" style="stroke:rgb(0,0,0)" x-csim-class="wall" />
+  <line x1="440" y1="390" x2="520" y2="390" style="stroke:rgb(0,0,0)" x-csim-class="wall" />
+  <line x1="440" y1="310" x2="440" y2="390" style="stroke:rgb(0,0,0)" x-csim-class="wall" />
+
+  <rect x="260" y="670" width="280" height="330" style="fill:rgb(0,255,0);" x-csim-class="spawn-area" x-csim-id="0" />
+  <rect x="250" y="420" width="30" height="50" style="fill:rgb(0,255,255);" x-csim-class="target-area" x-csim-id="0" x-csim-seq-no="0" x-csim-last="false"/>
+  <rect x="10" y="210" width="30" height="280" style="fill:rgb(0,0,255);" x-csim-class="target-area" x-csim-id="0" x-csim-seq-no="1" x-csim-last="true"/>
+
+  <rect x="260" y="670" width="280" height="330" style="fill:rgb(0,255,0);" x-csim-class="spawn-area" x-csim-id="1" />
+  <rect x="520" y="420" width="30" height="50" style="fill:rgb(0,255,255);" x-csim-class="target-area" x-csim-id="1" x-csim-seq-no="0" x-csim-last="false"/>
+  <rect x="760" y="210" width="30" height="280" style="fill:rgb(0,0,255);" x-csim-class="target-area" x-csim-id="1" x-csim-seq-no="1" x-csim-last="true"/>
+
+  <rect x="260" y="670" width="280" height="330" style="fill:rgb(0,255,0);" x-csim-class="spawn-area" x-csim-id="2" />
+  <rect x="370" y="390" width="60" height="30" style="fill:rgb(0,255,255);" x-csim-class="target-area" x-csim-id="2" x-csim-seq-no="0" x-csim-last="false"/>
+  <rect x="370" y="280" width="60" height="30" style="fill:rgb(0,255,255);" x-csim-class="target-area" x-csim-id="2" x-csim-seq-no="1" x-csim-last="false"/>
+  <rect x="260" y="0" width="280" height="30" style="fill:rgb(0,0,255);" x-csim-class="target-area" x-csim-id="2" x-csim-seq-no="2" x-csim-last="true"/>
+</svg>

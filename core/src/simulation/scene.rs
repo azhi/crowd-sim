@@ -11,6 +11,8 @@ use ::utils::linelg::Line;
 use ::utils::linelg::Point;
 use ::utils::linelg::distance::DistanceTo;
 
+pub const APPROX_PERSON_RADIUS: f64 = 0.5_f64;
+
 pub struct Scene {
     pub people: LinkedList<Person>,
     pub geometry: Vec<Line>,
@@ -84,10 +86,12 @@ impl Scene {
 
             let mut parsed_target_areas : Vec<Area> = Vec::new();
             for scene_target_area in target_areas.iter() {
-                let target_area = Area{ p0: Point::new(scene_target_area.x0 as f64, scene_target_area.y0 as f64),
-                                        p1: Point::new(scene_target_area.x1 as f64, scene_target_area.y1 as f64),
-                                        sequence_no: scene_target_area.sequence_no };
-                parsed_target_areas.push(target_area)
+                if scene_target_area.id == scene_spawn_area.id {
+                    let target_area = Area{ p0: Point::new(scene_target_area.x0 as f64, scene_target_area.y0 as f64),
+                                            p1: Point::new(scene_target_area.x1 as f64, scene_target_area.y1 as f64),
+                                            sequence_no: scene_target_area.sequence_no };
+                    parsed_target_areas.push(target_area)
+                }
             }
             parsed_target_areas.sort_by(|a, b| a.sequence_no.cmp(&b.sequence_no));
 
@@ -105,7 +109,7 @@ impl Scene {
             spawn_area.ticks_to_next_spawn -= 1;
             if spawn_area.ticks_to_next_spawn == 0 {
                 paths_needed_spawn.push(index);
-                spawn_area.ticks_to_next_spawn = (spawn_area.rate / tick).ceil() as u16;
+                spawn_area.ticks_to_next_spawn = (1_f64 / spawn_area.rate / tick).ceil() as u16;
             }
         }
 
@@ -146,7 +150,6 @@ impl Scene {
     }
 
     fn is_free(&self, p: &Point) -> bool {
-        const APPROX_PERSON_RADIUS: f64 = 0.5_f64;
         let mut free = true;
         for person in self.people.iter() {
             if person.coordinates.distance_sqr(p) < (APPROX_PERSON_RADIUS / self.scale).powi(2) {
@@ -186,5 +189,37 @@ impl Scene {
                 cursor.remove();
             }
         }
+    }
+
+    pub fn get_density_map(&self) -> Vec<Vec<f64>> {
+        const KERNEL_C : f64 = 2_f64;
+
+        let mut res = Vec::new();
+        res.reserve(self.height as usize);
+        for i in (0 .. self.height) {
+            let mut inner_vec = Vec::new();
+            inner_vec.reserve(self.width as usize);
+            for j in (0 .. self.width) {
+                inner_vec.push(0_f64);
+            }
+            res.push(inner_vec);
+        }
+
+        let effective_c = (KERNEL_C / self.scale).round() as i32;
+        for person in &self.people {
+            for i in (person.coordinates.y as i32 - 3 * effective_c .. person.coordinates.y as i32 + 3 * effective_c) {
+                for j in (person.coordinates.x as i32 - 3 * effective_c .. person.coordinates.x as i32 + 3 * effective_c) {
+                    if i > 0 && i < self.height as i32 &&
+                       j > 0 && j < self.width  as i32 {
+                        let density_point = Point::new(j as f64, i as f64);
+                        let density_addition = (1_f64 - density_point.distance_sqr(&person.coordinates) / 9_f64 / (effective_c as f64).powi(2));
+                        if density_addition > 0_f64 {
+                            res[i as usize][j as usize] += density_addition.powi(2);
+                        }
+                    }
+                }
+            }
+        }
+        res
     }
 }

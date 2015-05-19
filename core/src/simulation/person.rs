@@ -16,7 +16,7 @@ pub struct Person {
 
 impl Person {
     pub fn move_by(&mut self, total_force: Vector, t: f64) {
-        let INSTANT_HEADING_CHANGE_THRESHOLD: f64 = 10_f64.to_radians();
+        let INSTANT_HEADING_CHANGE_THRESHOLD: f64 = 20_f64.to_radians();
         let mut new_heading = total_force.y.atan2(total_force.x);
         let mut heading_change = new_heading - self.heading;
         let adjusted_total_force = if heading_change.abs() > INSTANT_HEADING_CHANGE_THRESHOLD {
@@ -28,7 +28,7 @@ impl Person {
             Vector::new(
                 new_heading.cos(),
                 new_heading.sin()
-            ) * total_force.length()
+            ) * total_force.length().min(4_f64)
         } else {
             total_force
         };

@@ -31,7 +31,7 @@ impl Simulation {
 
     pub fn main_loop(&mut self) {
         info!("Starting main simulation loop");
-        let output = Output::new(&self.configuration);
+        let mut output = Output::new(&self.configuration);
         debug!("Sending init message to output");
         output.send_init();
         let mut avg_tick : f64 = 0.0_f64;
