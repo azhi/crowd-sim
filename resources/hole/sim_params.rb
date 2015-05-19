@@ -35,3 +35,9 @@ forces do
     coeff{ distribution 'normal'; mean 10.3; std_deviation 0.7 }
   end
 end
+
+# field of view description
+fov do
+  forward 5.0
+  backward 0.1
+end

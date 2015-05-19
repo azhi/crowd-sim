@@ -3,6 +3,7 @@ require_relative 'forces'
 require_relative 'scene'
 require_relative 'spawn'
 require_relative 'time'
+require_relative 'fov'
 
 module Sections
   class Root < Base
@@ -14,6 +15,7 @@ module Sections
     field name: 'time', type: :descendant, klass: 'Time'
     field name: 'spawn', type: :descendant, klass: 'Spawn'
     field name: 'forces', type: :descendant, klass: 'Forces'
+    field name: 'fov', type: :descendant, klass: 'Fov'
 
     def get_ref_value(value)
       value = value.sub('ref:', '')

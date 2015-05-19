@@ -72,6 +72,11 @@ pub struct ForcesTargetSpeed(pub DistributionValue);
 #[derive(Debug,Clone)]
 pub struct ForcesRepulsionCoeff(pub DistributionValue);
 
+#[derive(Debug,Clone)]
+pub struct FovForward(pub f64);
+#[derive(Debug,Clone)]
+pub struct FovBackward(pub f64);
+
 pub fn new(file: &mut Read) -> AnyMap {
     let mut config = AnyMap::new();
     parse_config_file(&mut config, file);
@@ -98,6 +103,7 @@ fn parse_single_item(config: &mut AnyMap, file: &mut Read, buf : &mut [u8]) -> b
             0x02 => parse_time_item(config, file, buf),
             0x03 => parse_spawn_item(config, file, buf),
             0x04 => parse_forces_item(config, file, buf),
+            0x05 => parse_fov_item(config, file, buf),
             _ => panic!("Unknown section in config: {}", section)
         }
         // let str_value = str::from_utf8(&[116, 116, 101, 115, 116]).unwrap().to_string().clone();
@@ -250,6 +256,23 @@ fn parse_target_force_item(config: &mut AnyMap, file: &mut Read, buf : &mut [u8]
         }
         _ => panic!("Unknown element in target force: {}", element)
     }
+}
+
+fn parse_fov_item(config: &mut AnyMap, file: &mut Read, buf : &mut [u8]) {
+    let element = parse_u16(file, buf);
+    match element {
+        0x01 => {
+            let forward = parse_f64(file, buf);
+            config.insert(FovForward(forward));
+            debug!("Parsed FovForward: {}", forward);
+        },
+        0x02 => {
+            let backward = parse_f64(file, buf);
+            config.insert(FovBackward(backward));
+            debug!("Parsed FovBackward: {}", backward);
+        },
+        _ => panic!("Unknown element in fov config: {}", element)
+    };
 }
 
 fn parse_coordinates(file: &mut Read, buf : &mut [u8]) -> (u16, u16, u16, u16) {

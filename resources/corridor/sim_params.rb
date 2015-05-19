@@ -19,7 +19,7 @@ spawn do
   # distribution of spawns in time
   time{ distribution 'uniform' }
   # rate of spawns (men in second)
-  rate 1
+  rate 3
 end
 
 # forces description
@@ -34,4 +34,10 @@ forces do
     # force coeff distribution
     coeff{ distribution 'normal'; mean 10.3; std_deviation 0.7 }
   end
+end
+
+# field of view description
+fov do
+  forward 5.0
+  backward 0.1
 end
