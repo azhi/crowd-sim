@@ -27,6 +27,9 @@ void controller_read_init_message(struct ControllerData* controller_data)
 {
   controller_data->scene_file_name = controller_read_string();
   controller_data->scene_scale = controller_read_double();
+  controller_data->density_map_enabled = controller_read_byte();
+  controller_data->sdl_data.density_map_min_threshold = controller_read_double();
+  controller_data->sdl_data.density_map_max_threshold = controller_read_double();
 }
 
 void controller_load_textures(struct ControllerData* controller_data)
@@ -51,18 +54,20 @@ void controller_main_loop(struct ControllerData* controller_data)
 
     sdl_draw_texture(&controller_data->sdl_data, controller_data->sdl_data.background);
 
-    unsigned char has_densities = controller_read_byte();
-    if (has_densities) {
-      long densities_count = controller_read_long();
-      sdl_clear_density(&controller_data->sdl_data);
-      for (long i = 0; i < densities_count; i++) {
-          int x = controller_read_short();
-          int y = controller_read_short();
-          double density = controller_read_double();
-          sdl_set_density(&controller_data->sdl_data, x, y, density);
-        }
+    if (controller_data->density_map_enabled) {
+      unsigned char has_densities = controller_read_byte();
+      if (has_densities) {
+        long densities_count = controller_read_long();
+        sdl_clear_density(&controller_data->sdl_data);
+        for (long i = 0; i < densities_count; i++) {
+            int x = controller_read_short();
+            int y = controller_read_short();
+            double density = controller_read_double();
+            sdl_set_density(&controller_data->sdl_data, x, y, density);
+          }
+      }
+      sdl_draw_density(&controller_data->sdl_data);
     }
-    sdl_draw_density(&controller_data->sdl_data);
 
     long people_count = controller_read_long();
     for (long i = 0; i < people_count; i++) {

@@ -13,6 +13,10 @@ use ::simulation::person::Person;
 pub struct Output {
     scene_file_name: String,
     scene_scale: f64,
+
+    density_map_enabled: bool,
+    density_map_min_threshold: f64,
+    density_map_max_threshold: f64,
     ticks_without_density: u32,
 }
 
@@ -20,27 +24,42 @@ impl Output {
     pub fn new(configuration: &AnyMap) -> Output {
         let scene_scale = config!(configuration, SceneScale);
         let scene_filename = config!(configuration, SceneFilename);
-        Output{ scene_file_name: scene_filename, scene_scale: scene_scale, ticks_without_density: 0 }
+
+        let density_map_enabled = config!(configuration, DensityMapEnabled);
+        let density_map_min_threshold = config!(configuration, DensityMapMinThreshold);
+        let density_map_max_threshold = config!(configuration, DensityMapMaxThreshold);
+
+        Output{ scene_file_name: scene_filename, scene_scale: scene_scale,
+                density_map_enabled: density_map_enabled, density_map_min_threshold: density_map_min_threshold,
+                density_map_max_threshold: density_map_max_threshold, ticks_without_density: 0 }
     }
 
     pub fn send_init(&self) {
         let mut out = ::std::io::stdout();
         self.write_string(&mut out, &self.scene_file_name);
         self.write_f64(&mut out, self.scene_scale);
+        let density_map_enabled_num = if self.density_map_enabled { 1_u8 } else { 0_u8 };
+        self.write_u8(&mut out, density_map_enabled_num);
+        self.write_f64(&mut out, self.density_map_min_threshold);
+        self.write_f64(&mut out, self.density_map_max_threshold);
     }
 
     pub fn dump_state(&mut self, simulation: &Simulation) {
         let mut out = ::std::io::stdout();
         let current_time = simulation.time.current_time;
         self.write_f64(&mut out, current_time);
-        if self.ticks_without_density == 0 {
-            self.write_u8(&mut out, 1_u8);
-            self.dump_density_map(&mut out, &simulation.scene.get_density_map());
-            self.ticks_without_density = (1_f64 / simulation.time.tick).ceil() as u32;
-        } else {
-            self.write_u8(&mut out, 0_u8);
-            self.ticks_without_density -= 1;
+
+        if self.density_map_enabled {
+            if self.ticks_without_density == 0 {
+                self.write_u8(&mut out, 1_u8);
+                self.dump_density_map(&mut out, &simulation.scene.get_density_map());
+                self.ticks_without_density = (1_f64 / simulation.time.tick).ceil() as u32;
+            } else {
+                self.write_u8(&mut out, 0_u8);
+                self.ticks_without_density -= 1;
+            }
         }
+
         self.dump_people_location(&mut out, &simulation.scene.people);
     }
 
@@ -55,22 +74,12 @@ impl Output {
     }
 
     fn dump_density_map(&self, out: &mut Write, density_map: &Vec<Vec<f64>>) {
-        const MIN_DENSITY_TRESHOLD : f64 = 5.0;
-        let mut min_non_zero = ::std::f64::MAX;
-        let mut max = ::std::f64::MIN;
         let mut values_to_write = Vec::new();
         for i in (0 .. density_map.len()) {
             for j in (0 .. density_map[i].len()) {
                 let value = density_map[i][j];
-                if value > MIN_DENSITY_TRESHOLD {
+                if value > self.density_map_min_threshold {
                     values_to_write.push((j, i, value));
-                }
-
-                if value > max {
-                    max = value;
-                };
-                if value != 0_f64 && value < min_non_zero {
-                    min_non_zero = value;
                 }
             }
         };

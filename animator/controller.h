@@ -12,6 +12,8 @@ struct ControllerData {
   double person_file_scale;
   char* scene_file_name;
   double scene_scale;
+
+  unsigned char density_map_enabled;
 };
 
 void controller_init_sdl(struct ControllerData*);

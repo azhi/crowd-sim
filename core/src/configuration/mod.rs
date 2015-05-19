@@ -77,6 +77,13 @@ pub struct FovForward(pub f64);
 #[derive(Debug,Clone)]
 pub struct FovBackward(pub f64);
 
+#[derive(Debug,Clone)]
+pub struct DensityMapEnabled(pub bool);
+#[derive(Debug,Clone)]
+pub struct DensityMapMinThreshold(pub f64);
+#[derive(Debug,Clone)]
+pub struct DensityMapMaxThreshold(pub f64);
+
 pub fn new(file: &mut Read) -> AnyMap {
     let mut config = AnyMap::new();
     parse_config_file(&mut config, file);
@@ -104,6 +111,7 @@ fn parse_single_item(config: &mut AnyMap, file: &mut Read, buf : &mut [u8]) -> b
             0x03 => parse_spawn_item(config, file, buf),
             0x04 => parse_forces_item(config, file, buf),
             0x05 => parse_fov_item(config, file, buf),
+            0x06 => parse_density_map_item(config, file, buf),
             _ => panic!("Unknown section in config: {}", section)
         }
         // let str_value = str::from_utf8(&[116, 116, 101, 115, 116]).unwrap().to_string().clone();
@@ -272,6 +280,29 @@ fn parse_fov_item(config: &mut AnyMap, file: &mut Read, buf : &mut [u8]) {
             debug!("Parsed FovBackward: {}", backward);
         },
         _ => panic!("Unknown element in fov config: {}", element)
+    };
+}
+
+fn parse_density_map_item(config: &mut AnyMap, file: &mut Read, buf : &mut [u8]) {
+    let element = parse_u16(file, buf);
+    match element {
+        0x01 => {
+            let enabled_num = parse_u8(file, buf);
+            let enabled = enabled_num != 0_u8;
+            config.insert(DensityMapEnabled(enabled));
+            debug!("Parsed DensityMapEnabled: {}", enabled);
+        },
+        0x02 => {
+            let min_threshold = parse_f64(file, buf);
+            config.insert(DensityMapMinThreshold(min_threshold));
+            debug!("Parsed DensityMapMinThreshold: {}", min_threshold);
+        },
+        0x03 => {
+            let max_threshold = parse_f64(file, buf);
+            config.insert(DensityMapMaxThreshold(max_threshold));
+            debug!("Parsed DensityMapMaxThreshold: {}", max_threshold);
+        },
+        _ => panic!("Unknown element in density map config: {}", element)
     };
 }
 

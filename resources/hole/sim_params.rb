@@ -41,3 +41,10 @@ fov do
   forward 5.0
   backward 0.1
 end
+
+# density map description
+density_map do
+  enabled true
+  min_threshold 5.0
+  max_threshold 10.0
+end

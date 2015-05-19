@@ -13,6 +13,8 @@ struct SDLData {
 
   SDL_Texture* person_textures[360];
 
+  double density_map_min_threshold;
+  double density_map_max_threshold;
   Uint32* density_color_map;
 
   int scene_width;

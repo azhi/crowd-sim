@@ -83,10 +83,8 @@ void sdl_draw_person(struct SDLData* sdl_data, int x, int y, double heading)
 
 void sdl_set_density(struct SDLData* sdl_data, int x, int y, double density)
 {
-  const double DENSITY_MIN_THRESHOLD = 5.0;
-  const double DENSITY_MAX_THRESHOLD = 10.0;
-  density = fmin(density, DENSITY_MAX_THRESHOLD) - DENSITY_MIN_THRESHOLD;
-  unsigned char white_channel = (unsigned char) 255 - floor(density * 255 / (DENSITY_MAX_THRESHOLD - DENSITY_MIN_THRESHOLD));
+  density = fmin(density, sdl_data->density_map_max_threshold) - sdl_data->density_map_min_threshold;
+  unsigned char white_channel = (unsigned char) 255 - floor(density * 255 / (sdl_data->density_map_max_threshold - sdl_data->density_map_min_threshold));
   sdl_data->density_color_map[y * sdl_data->scene_width + x] = 0xaaff0000 | (white_channel << 8) | white_channel;
 }
 

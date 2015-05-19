@@ -49,6 +49,7 @@ module Sections
               when :int then value.to_i
               when :float then value.to_f
               when :string then value.to_s
+              when :bool then !!value
               when :descendant
                 klass = field[:klass].split('::').inject(Sections) do |res, kl|
                   raise 'Requested descendant class not found!' unless res
