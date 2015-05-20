@@ -17,9 +17,9 @@ pub struct RepulsionForce;
 impl RepulsionForce {
     fn repulsion_from_obstacle<T: Debug>(&self, person: &Person, obstacle: &T, scene_scale: f64) -> Vector where Point: DistanceTo<T> {
         // some magic numbers
-        const DISTANCE_SQR_THRESHOLD: f64 = 25_f64;
-        const REPULSION_ELLIPSE_R_X: f64 = 1.5_f64;
-        const REPULSION_ELLIPSE_R_Y: f64 = 5_f64;
+        const DISTANCE_SQR_THRESHOLD: f64 = 125_f64;
+        const REPULSION_ELLIPSE_R_X: f64 = 1.0_f64;
+        const REPULSION_ELLIPSE_R_Y: f64 = 2.0_f64;
 
         let nearest_point = person.coordinates.nearest_point(obstacle);
         let direction = nearest_point - person.coordinates;
@@ -27,7 +27,9 @@ impl RepulsionForce {
         if direction_length_sqr_in_meters < DISTANCE_SQR_THRESHOLD && direction.length_sqr() != 0.0 {
             let angle = direction.y.atan2(direction.x);
             let ellipse_coeff = self.ellipse_sqr_radius_at_angle(REPULSION_ELLIPSE_R_X, REPULSION_ELLIPSE_R_Y, angle);
-            - direction.normalized() / ((direction_length_sqr_in_meters - ::simulation::scene::APPROX_PERSON_RADIUS) * 5_f64) * ellipse_coeff
+            // let distance_coeff = 1_f64 / ((direction_length_sqr_in_meters.sqrt() - ::simulation::scene::APPROX_PERSON_RADIUS) * 5_f64);
+            let distance_coeff = (- 1_f64 / 2.5_f64 * (direction_length_sqr_in_meters.sqrt() - ::simulation::scene::APPROX_PERSON_RADIUS) + 3_f64).max(0_f64).min(3_f64);
+            - direction.normalized() * distance_coeff * ellipse_coeff.sqrt()
         } else {
             Vector::zero()
         }
@@ -48,10 +50,10 @@ impl Forceable for RepulsionForce {
         for other_person in scene.people.iter() {
             force = force + self.repulsion_from_obstacle(&person, &other_person.coordinates, scene.scale);
         }
-        // let force_power = force.length().min(4_f64);
-        // if force_power != 0_f64 {
-            // force = force.normalized() * force_power * repulsion_coeff;
-        // }
+        let force_power = force.length().min(4_f64);
+        if force_power != 0_f64 {
+            force = force.normalized() * force_power;
+        }
         force = force * repulsion_coeff;
         force
     }
