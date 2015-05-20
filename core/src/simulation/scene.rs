@@ -137,7 +137,7 @@ impl Scene {
             Some(point) => {
                 let new_person = Person{
                     coordinates: point.clone(),
-                    heading: -90_f64.to_radians(),
+                    heading: 270_f64.to_radians(),
                     path_id: path.id,
                     current_target_index: 0,
                     current_target_point: path.target_areas[0].random_inside(),

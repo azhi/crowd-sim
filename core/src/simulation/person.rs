@@ -16,15 +16,28 @@ pub struct Person {
 
 impl Person {
     pub fn move_by(&mut self, total_force: Vector, t: f64) {
-        let INSTANT_HEADING_CHANGE_THRESHOLD: f64 = 20_f64.to_radians();
+        let INSTANT_HEADING_CHANGE_THRESHOLD: f64 = 10_f64.to_radians();
+        let TURN_RATE: f64 = 5_f64.to_radians();
+
         let mut new_heading = total_force.y.atan2(total_force.x);
+        if new_heading < 0_f64 {
+            new_heading += 2_f64 * ::std::f64::consts::PI;
+        }
         let mut heading_change = new_heading - self.heading;
+        if heading_change > ::std::f64::consts::PI {
+            heading_change = - 2_f64 * ::std::f64::consts::PI + heading_change;
+        } else if heading_change < - ::std::f64::consts::PI {
+            heading_change = 2_f64 * ::std::f64::consts::PI + heading_change;
+        }
         let adjusted_total_force = if heading_change.abs() > INSTANT_HEADING_CHANGE_THRESHOLD {
             new_heading = if heading_change > 0_f64 {
-                self.heading + INSTANT_HEADING_CHANGE_THRESHOLD
+                self.heading + TURN_RATE
             } else {
-                self.heading - INSTANT_HEADING_CHANGE_THRESHOLD
+                self.heading - TURN_RATE
             };
+            if new_heading < 0_f64 {
+                new_heading += 2_f64 * ::std::f64::consts::PI;
+            }
             Vector::new(
                 new_heading.cos(),
                 new_heading.sin()
