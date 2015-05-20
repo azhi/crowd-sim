@@ -66,12 +66,18 @@ void sdl_draw_texture(struct SDLData* sdl_data, SDL_Texture* texture)
 
 void sdl_draw_person(struct SDLData* sdl_data, int x, int y, double heading)
 {
-
   double angle = heading * 180 / M_PI + 90;
-  if (angle < 0) {
-    angle += 360;
+  long angle_int = lround(angle);
+  if (angle_int >= 360) {
+    angle_int -= 360;
   };
-  SDL_Texture* texture = sdl_data->person_textures[(int) angle];
+  if (angle_int < 0) {
+    angle_int += 360;
+  };
+  if (angle_int > 359) {
+    fprintf(stderr, "ALARM!! %f %d\n", angle, angle_int);
+  }
+  SDL_Texture* texture = sdl_data->person_textures[angle_int];
 
   SDL_Rect dst;
   SDL_QueryTexture(texture, NULL, NULL, &dst.w, &dst.h);
@@ -201,24 +207,6 @@ SDL_Texture* sdl_load_svg(struct SDLData* sdl_data, const char* file, double sca
 
   rsvg_handle_render_cairo(rsvg_handle, cr);
 
-  /* cairo_surface_t *cairo_surf2 = cairo_image_surface_create(CAIRO_FORMAT_ARGB32, width, height); */
-  /*  */
-  /* if (cairo_surface_status(cairo_surf2) != CAIRO_STATUS_SUCCESS) */
-  /*   cairo_error("cairo_image_surface_create"); */
-  /*  */
-  /* cairo_t *cr2 = cairo_create(cairo_surf2); */
-  /* if (cairo_status(cr2) != CAIRO_STATUS_SUCCESS) */
-  /*   cairo_error("cairo_create"); */
-
-
-  /* cairo_set_source_surface(cr2, cairo_surf, 0, 0); */
-  /*  */
-  /* cairo_surface_finish(cairo_surf2); */
-
-  char filename[1000];
-  sprintf(filename, "/tmp/cairo%f.png", angle);
-  cairo_surface_write_to_png(cairo_surf, filename);
-
   cairo_surface_finish(cairo_surf);
 
   // Adjust the SDL surface to match the cairo surface created
@@ -234,8 +222,6 @@ SDL_Texture* sdl_load_svg(struct SDLData* sdl_data, const char* file, double sca
 
   if (sdl_surface == NULL)
     sdl_error("SDL_CreateRGBSurfaceFrom");
-
-  SDL_SetColorKey(sdl_surface, SDL_TRUE, SDL_MapRGB(sdl_surface->format, 192, 192, 192));
 
   SDL_Texture *tex = SDL_CreateTextureFromSurface(sdl_data->renderer, sdl_surface);
 
