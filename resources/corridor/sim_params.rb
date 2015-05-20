@@ -32,7 +32,7 @@ forces do
   # force that pushes man apart from each other
   repulsion do
     # force coeff distribution
-    coeff{ distribution 'normal'; mean 10.3; std_deviation 0.7 }
+    coeff{ distribution 'normal'; mean 1.0; std_deviation 0.1 }
   end
 end
 

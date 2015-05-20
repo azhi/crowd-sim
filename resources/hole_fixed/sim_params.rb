@@ -1,7 +1,7 @@
 # scene description
 scene do
   # svg file with scene geometry
-  file '/home/azhi/develop/crowd-sim/resources/hole/scene.svg'
+  file '/home/azhi/develop/crowd-sim/resources/hole_fixed/scene.svg'
   # file scale (meters per pixel)
   scale 0.05
 end
