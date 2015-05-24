@@ -9,7 +9,7 @@ end
 # simulation time description
 time do
   # time to end simulation (Float::INFINITY for infinite one), seconds
-  end_time 20.0
+  end_time 40.0
   # simulation clock tick time
   tick 0.1
 end
@@ -19,7 +19,7 @@ spawn do
   # distribution of spawns in time
   time{ distribution 'uniform' }
   # rate of spawns (men in second)
-  rate 3
+  rate 2
 end
 
 # forces description
@@ -45,6 +45,6 @@ end
 # density map description
 density_map do
   enabled true
-  min_threshold 7.0
+  min_threshold 6.0
   max_threshold 15.0
 end

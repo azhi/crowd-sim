@@ -9,7 +9,7 @@ end
 # simulation time description
 time do
   # time to end simulation (Float::INFINITY for infinite one), seconds
-  end_time 60.0
+  end_time 120.0
   # simulation clock tick time
   tick 0.05
 end
