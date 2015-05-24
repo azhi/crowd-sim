@@ -68,10 +68,10 @@ void sdl_draw_person(struct SDLData* sdl_data, int x, int y, double heading)
 {
   double angle = heading * 180 / M_PI + 90;
   long angle_int = lround(angle);
-  if (angle_int >= 360) {
+  while (angle_int >= 360) {
     angle_int -= 360;
   };
-  if (angle_int < 0) {
+  while (angle_int < 0) {
     angle_int += 360;
   };
   if (angle_int > 359) {
