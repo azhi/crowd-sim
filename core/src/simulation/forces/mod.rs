@@ -2,6 +2,7 @@ extern crate anymap;
 
 mod repulsion;
 mod target;
+mod fluctuation;
 
 use std::ops::Deref;
 
@@ -29,6 +30,7 @@ use self::anymap::AnyMap;
 
 use self::repulsion::RepulsionForce;
 use self::target::TargetForce;
+use self::fluctuation::FluctuationForce;
 
 use ::simulation::person::Person;
 use ::simulation::scene::Scene;
@@ -55,7 +57,8 @@ pub struct PersonForcesParams {
 trait_enum! {
     enum Force : Forceable {
         Target(TargetForce),
-        Repulsion(RepulsionForce)
+        Repulsion(RepulsionForce),
+        Fluctuation(FluctuationForce)
     }
 }
 
@@ -67,7 +70,8 @@ impl Forces {
 
         let used_forces = vec![
             Force::Target(TargetForce),
-            Force::Repulsion(RepulsionForce)
+            Force::Repulsion(RepulsionForce),
+            Force::Fluctuation(FluctuationForce),
         ];
         Forces{ used_forces: used_forces, target_speed: target_speed, repulsion_coeff: repulsion_coeff }
     }
