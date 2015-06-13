@@ -32,14 +32,14 @@ forces do
   # force that pushes man apart from each other
   repulsion do
     # force coeff distribution
-    coeff{ distribution 'normal'; mean 1.0; std_deviation 0.1 }
+    coeff{ distribution 'normal'; mean 2.0; std_deviation 0.1 }
   end
 end
 
 # field of view description
 fov do
-  forward 5.0
-  backward 0.1
+  forward{ distribution 'normal'; mean 5.0; std_deviation 0.1 }
+  backward{ distribution 'backward'; mean 5.0; std_deviation 0.001 }
 end
 
 # density map description

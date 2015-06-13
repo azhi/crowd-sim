@@ -73,9 +73,9 @@ pub struct ForcesTargetSpeed(pub DistributionValue);
 pub struct ForcesRepulsionCoeff(pub DistributionValue);
 
 #[derive(Debug,Clone)]
-pub struct FovForward(pub f64);
+pub struct FovForward(pub DistributionValue);
 #[derive(Debug,Clone)]
-pub struct FovBackward(pub f64);
+pub struct FovBackward(pub DistributionValue);
 
 #[derive(Debug,Clone)]
 pub struct DensityMapEnabled(pub bool);
@@ -270,14 +270,14 @@ fn parse_fov_item(config: &mut AnyMap, file: &mut Read, buf : &mut [u8]) {
     let element = parse_u16(file, buf);
     match element {
         0x01 => {
-            let forward = parse_f64(file, buf);
+            let forward = parse_distribution(file, buf);
+            debug!("Parsed FovForward: {:?}", forward);
             config.insert(FovForward(forward));
-            debug!("Parsed FovForward: {}", forward);
         },
         0x02 => {
-            let backward = parse_f64(file, buf);
+            let backward = parse_distribution(file, buf);
+            debug!("Parsed FovBackward: {:?}", backward);
             config.insert(FovBackward(backward));
-            debug!("Parsed FovBackward: {}", backward);
         },
         _ => panic!("Unknown element in fov config: {}", element)
     };

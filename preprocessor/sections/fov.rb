@@ -7,19 +7,9 @@ module Sections
       'forward' => 0x01, 'backward' => 0x02
     }
 
-    FOV_ELEMENTS_TEMPLATES = {
-      'forward' => 'E', 'backward' => 'E'
-    }
-
-    field name: 'forward', type: :float
-    field name: 'backward', type: :float
-
-    def to_config
-      config = ""
-      config += [FOV_SECTION, FOV_ELEMENTS['forward'], get_data('forward')].pack(CONFIG_ITEM_TEMPLATE_PREFIX + FOV_ELEMENTS_TEMPLATES['forward'])
-      config += [FOV_SECTION, FOV_ELEMENTS['backward'], get_data('backward')].pack(CONFIG_ITEM_TEMPLATE_PREFIX + FOV_ELEMENTS_TEMPLATES['backward'])
-      config += super.to_s
-      config
-    end
+    field name: 'forward', type: :distribution, current_section: FOV_SECTION,
+          element: FOV_ELEMENTS['forward']
+    field name: 'backward', type: :distribution, current_section: FOV_SECTION,
+          element: FOV_ELEMENTS['backward']
   end
 end

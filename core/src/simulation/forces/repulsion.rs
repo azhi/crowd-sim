@@ -26,18 +26,16 @@ impl RepulsionForce {
         let direction_length_sqr_in_meters = direction.length_sqr() * scene_scale;
         if direction_length_sqr_in_meters < DISTANCE_SQR_THRESHOLD && direction.length_sqr() != 0.0 {
             let angle = direction.y.atan2(direction.x);
-            let ellipse_coeff = self.ellipse_sqr_radius_at_angle(REPULSION_ELLIPSE_R_X, REPULSION_ELLIPSE_R_Y, angle);
+            let ellipse_coeff = ::utils::linelg::ellipse_sqr_radius_at_angle(REPULSION_ELLIPSE_R_X, REPULSION_ELLIPSE_R_Y, angle);
             // let distance_coeff = 1_f64 / ((direction_length_sqr_in_meters.sqrt() - ::simulation::scene::APPROX_PERSON_RADIUS) * 5_f64);
             let distance_coeff = (- 1_f64 / 2.5_f64 * (direction_length_sqr_in_meters.sqrt() - ::simulation::scene::APPROX_PERSON_RADIUS) + 3_f64).max(0_f64).min(3_f64);
-            - direction.normalized() * distance_coeff * ellipse_coeff.sqrt()
+            let fov_coeff = person.fov_coeff(nearest_point);
+            - direction.normalized() * distance_coeff * fov_coeff * ellipse_coeff.sqrt()
         } else {
             Vector::zero()
         }
     }
 
-    fn ellipse_sqr_radius_at_angle(&self, r_x: f64, r_y: f64, angle: f64) -> f64 {
-        (r_x * r_y).powi(2) / (r_x.powi(2) * angle.sin().powi(2) + r_y.powi(2) * angle.cos().powi(2))
-    }
 }
 
 impl Forceable for RepulsionForce {

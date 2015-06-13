@@ -49,6 +49,21 @@ impl Person {
         self.heading = new_heading;
     }
 
+    pub fn fov_coeff(&self, source: Point) -> f64 {
+        const SIDE_FOV: f64 = 2_f64;
+
+        let direction = source - self.coordinates;
+        let angle = direction.y.atan2(direction.x);
+        let ellipse_coeff = if angle > 0_f64 {
+            ::utils::linelg::ellipse_sqr_radius_at_angle(SIDE_FOV, self.forces_params.forward_fov, angle).sqrt()
+        } else {
+            ::utils::linelg::ellipse_sqr_radius_at_angle(SIDE_FOV, self.forces_params.backward_fov, -angle).sqrt()
+        };
+        let normalization_coeff = SIDE_FOV.max(self.forces_params.forward_fov).max(self.forces_params.backward_fov);
+        let fov_coeff = ellipse_coeff / normalization_coeff / 2_f64;
+        fov_coeff
+    }
+
     pub fn reached_destination(&self, path: &Path) -> bool {
         let target = &path.target_areas[self.current_target_index as usize];
         self.coordinates.x > target.p0.x && self.coordinates.x < target.p1.x &&

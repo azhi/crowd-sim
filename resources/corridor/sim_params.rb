@@ -38,8 +38,8 @@ end
 
 # field of view description
 fov do
-  forward 5.0
-  backward 0.1
+  forward{ distribution 'normal'; mean 5.0; std_deviation 0.1 }
+  backward{ distribution 'backward'; mean 0.1; std_deviation 0.001 }
 end
 
 # density map description

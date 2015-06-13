@@ -20,6 +20,10 @@ pub fn clamp<T: PartialOrd>(x: T, min: T, max: T) -> T {
     if x < min { min } else if x > max { max } else { x }
 }
 
+pub fn ellipse_sqr_radius_at_angle(r_x: f64, r_y: f64, angle: f64) -> f64 {
+    (r_x * r_y).powi(2) / (r_x.powi(2) * angle.sin().powi(2) + r_y.powi(2) * angle.cos().powi(2))
+}
+
 #[test]
 fn test_dot() {
     let a = Vector::new(1f64, 2f64);
