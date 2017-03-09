@@ -1,0 +1,25 @@
+<svg height="600" width="1200">
+  <rect x="0" y="0" width="1200" height="600" style="fill:white" />
+
+  <line x1="10" y1="0" x2="10" y2="600" style="stroke:rgb(0,0,0)" x-csim-class="wall" />
+
+  <line x1="400" y1="200" x2="400" y2="600" style="stroke:rgb(0,0,0)" x-csim-class="wall" />
+  <line x1="380" y1="200" x2="400" y2="200" style="stroke:rgb(0,0,0)" x-csim-class="wall" />
+  <line x1="380" y1="200" x2="380" y2="600" style="stroke:rgb(0,0,0)" x-csim-class="wall" />
+
+  <line x1="700" y1="200" x2="700" y2="600" style="stroke:rgb(0,0,0)" x-csim-class="wall" />
+  <line x1="700" y1="200" x2="900" y2="200" style="stroke:rgb(0,0,0)" x-csim-class="wall" />
+  <line x1="900" y1="200" x2="900" y2="600" style="stroke:rgb(0,0,0)" x-csim-class="wall" />
+
+  <line x1="1190" y1="0" x2="1190" y2="600" style="stroke:rgb(0,0,0)" x-csim-class="wall" />
+
+  <rect x="10" y="550" width="370" height="50" style="fill:rgb(0,255,0);" x-csim-class="spawn-area" x-csim-id="0" />
+  <rect x="270" y="160" width="80" height="40" style="fill:rgb(0,255,255);" x-csim-class="target-area" x-csim-id="0" x-csim-seq-no="0" x-csim-last="false"/>
+  <rect x="420" y="160" width="120" height="40" style="fill:rgb(0,255,255);" x-csim-class="target-area" x-csim-id="0" x-csim-seq-no="1" x-csim-last="false"/>
+  <rect x="400" y="550" width="140" height="50" style="fill:rgb(0,0,255);" x-csim-class="target-area" x-csim-id="0" x-csim-seq-no="2" x-csim-last="true"/>
+
+  <rect x="550" y="550" width="150" height="50" style="fill:rgb(0,255,0);" x-csim-class="spawn-area" x-csim-id="1" />
+  <rect x="600" y="160" width="80" height="40" style="fill:rgb(0,255,255);" x-csim-class="target-area" x-csim-id="1" x-csim-seq-no="0" x-csim-last="false"/>
+  <rect x="920" y="120" width="80" height="80" style="fill:rgb(0,255,255);" x-csim-class="target-area" x-csim-id="1" x-csim-seq-no="1" x-csim-last="false"/>
+  <rect x="900" y="550" width="290" height="50" style="fill:rgb(0,0,255);" x-csim-class="target-area" x-csim-id="1" x-csim-seq-no="2" x-csim-last="true"/>
+</svg>

@@ -1,7 +1,7 @@
 # scene description
 scene do
   # svg file with scene geometry
-  file '/home/azhi/develop/crowd-sim/resources/hole_fixed/scene.svg'
+  file '/home/azhi/develop/crowd-sim/resources/metro/scene.svg'
   # file scale (meters per pixel)
   scale 0.05
 end
@@ -9,9 +9,9 @@ end
 # simulation time description
 time do
   # time to end simulation (Float::INFINITY for infinite one), seconds
-  end_time 120.0
+  end_time 80.0
   # simulation clock tick time
-  tick 0.05
+  tick 0.1
 end
 
 # spawn area description
@@ -19,7 +19,7 @@ spawn do
   # distribution of spawns in time
   time{ distribution 'uniform' }
   # rate of spawns (men in second)
-  rate 0.8
+  rate 1.0
 end
 
 # forces description
@@ -32,7 +32,7 @@ forces do
   # force that pushes man apart from each other
   repulsion do
     # force coeff distribution
-    coeff{ distribution 'normal'; mean 2.0; std_deviation 0.1 }
+    coeff{ distribution 'normal'; mean 1.0; std_deviation 0.1 }
   end
 end
 
@@ -45,6 +45,6 @@ end
 # density map description
 density_map do
   enabled true
-  min_threshold 5.0
+  min_threshold 4.0
   max_threshold 10.0
 end

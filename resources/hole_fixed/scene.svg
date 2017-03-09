@@ -27,15 +27,15 @@
   <line x1="480" y1="390" x2="560" y2="390" style="stroke:rgb(0,0,0)" x-csim-class="wall" />
   <line x1="480" y1="310" x2="480" y2="390" style="stroke:rgb(0,0,0)" x-csim-class="wall" />
 
-  <rect x="260" y="670" width="280" height="330" style="fill:rgb(0,255,0);" x-csim-class="spawn-area" x-csim-id="0" />
+  <rect x="260" y="670" width="140" height="330" style="fill:rgb(0,255,0);" x-csim-class="spawn-area" x-csim-id="0" />
   <rect x="220" y="440" width="60" height="100" style="fill:rgb(0,255,255);" x-csim-class="target-area" x-csim-id="0" x-csim-seq-no="0" x-csim-last="false"/>
   <rect x="10" y="210" width="30" height="280" style="fill:rgb(0,0,255);" x-csim-class="target-area" x-csim-id="0" x-csim-seq-no="1" x-csim-last="true"/>
 
-  <rect x="260" y="670" width="280" height="330" style="fill:rgb(0,255,0);" x-csim-class="spawn-area" x-csim-id="1" />
+  <rect x="400" y="670" width="140" height="330" style="fill:rgb(0,255,0);" x-csim-class="spawn-area" x-csim-id="1" />
   <rect x="520" y="440" width="60" height="100" style="fill:rgb(0,255,255);" x-csim-class="target-area" x-csim-id="1" x-csim-seq-no="0" x-csim-last="false"/>
   <rect x="760" y="210" width="30" height="280" style="fill:rgb(0,0,255);" x-csim-class="target-area" x-csim-id="1" x-csim-seq-no="1" x-csim-last="true"/>
 
-  <rect x="260" y="670" width="280" height="330" style="fill:rgb(0,255,0);" x-csim-class="spawn-area" x-csim-id="2" />
+  <rect x="330" y="670" width="140" height="330" style="fill:rgb(0,255,0);" x-csim-class="spawn-area" x-csim-id="2" />
   <rect x="340" y="390" width="120" height="30" style="fill:rgb(0,255,255);" x-csim-class="target-area" x-csim-id="2" x-csim-seq-no="0" x-csim-last="false"/>
   <rect x="340" y="280" width="120" height="30" style="fill:rgb(0,255,255);" x-csim-class="target-area" x-csim-id="2" x-csim-seq-no="1" x-csim-last="false"/>
   <rect x="260" y="0" width="280" height="30" style="fill:rgb(0,0,255);" x-csim-class="target-area" x-csim-id="2" x-csim-seq-no="2" x-csim-last="true"/>
