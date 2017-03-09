@@ -1,4 +1,5 @@
-use std::ops::{Index, Mul, Add};
+#![allow(dead_code)]
+use std::ops::Index;
 
 // Re-export the linalg types from the internal modules
 pub use self::vector::Vector;

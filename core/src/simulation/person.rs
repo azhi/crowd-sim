@@ -4,7 +4,7 @@ use ::utils::linelg::Point;
 use ::simulation::forces::PersonForcesParams;
 use ::simulation::scene::Path;
 
-#[derive(Debug)]
+#[derive(Debug,Clone)]
 pub struct Person {
     pub coordinates: Point,
     pub heading: f64,
@@ -15,9 +15,10 @@ pub struct Person {
 }
 
 impl Person {
+    #[allow(non_snake_case)]
     pub fn move_by(&mut self, total_force: Vector, t: f64) {
         let INSTANT_HEADING_CHANGE_THRESHOLD: f64 = 10_f64.to_radians();
-        let TURN_RATE: f64 = 5_f64.to_radians();
+        let TURN_RATE: f64 = 10_f64.to_radians();
 
         let mut new_heading = total_force.y.atan2(total_force.x);
         if new_heading < 0_f64 {

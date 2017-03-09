@@ -4,28 +4,6 @@ mod repulsion;
 mod target;
 mod fluctuation;
 
-use std::ops::Deref;
-
-macro_rules! trait_enum {
-    (enum $name:ident : $_trait:ident { $($var:ident($ty:ty)),* }) => {
-        #[derive(Debug)]
-        pub enum $name {
-            $(
-                $var($ty),
-            )*
-        }
-
-        impl<'a> Deref for $name {
-            type Target = ($_trait + 'a);
-            fn deref<'b>(&'b self) -> &'b $_trait {
-                match self {
-                    $(& $name::$var(ref x) => x,)*
-                }
-            }
-        }
-    }
-}
-
 use self::anymap::AnyMap;
 
 use self::repulsion::RepulsionForce;
@@ -58,11 +36,20 @@ pub struct PersonForcesParams {
     pub backward_fov: f64,
 }
 
-trait_enum! {
-    enum Force : Forceable {
-        Target(TargetForce),
-        Repulsion(RepulsionForce),
-        Fluctuation(FluctuationForce)
+#[derive(Debug)]
+pub enum Force {
+    Target(TargetForce),
+    Repulsion(RepulsionForce),
+    Fluctuation(FluctuationForce)
+}
+
+impl Forceable for Force {
+    fn force_for_person(&self, person: &Person, scene: &Scene) -> Vector {
+        match self {
+            &Force::Target(ref force) => force.force_for_person(person, scene),
+            &Force::Repulsion(ref force) => force.force_for_person(person, scene),
+            &Force::Fluctuation(ref force) => force.force_for_person(person, scene)
+        }
     }
 }
 
@@ -86,7 +73,7 @@ impl Forces {
     pub fn total_force_for_person(&self, person: &Person, scene: &Scene) -> Vector {
         let mut total_force = Vector::zero();
         for force in self.used_forces.iter() {
-            total_force = total_force + force.deref().force_for_person(person, scene);
+            total_force = total_force + force.force_for_person(person, scene);
         }
         total_force
     }

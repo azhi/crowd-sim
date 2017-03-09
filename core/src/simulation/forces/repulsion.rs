@@ -1,12 +1,10 @@
 use ::std::fmt::Debug;
 
-use ::simulation::forces::Force;
 use ::simulation::forces::Forceable;
 
 use ::simulation::person::Person;
 use ::simulation::scene::Scene;
 
-use ::configuration::DistributionValue;
 use ::utils::linelg::distance::DistanceTo;
 use ::utils::linelg::Vector;
 use ::utils::linelg::Point;

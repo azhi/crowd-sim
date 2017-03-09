@@ -4,7 +4,6 @@ use std;
 use std::str;
 
 use std::io::prelude::*;
-use std::fs::File;
 
 use self::anymap::AnyMap;
 
@@ -309,7 +308,7 @@ fn parse_density_map_item(config: &mut AnyMap, file: &mut Read, buf : &mut [u8])
 fn parse_coordinates(file: &mut Read, buf : &mut [u8]) -> (u16, u16, u16, u16) {
     let mut coordinates = [0u16; 4];
     file.read(&mut buf[0 .. 8]).ok().expect("Can't read from file");
-    for i in (0..4) {
+    for i in 0..4 {
         coordinates[i] = two_u8le_to_u16(buf[2 * i], buf[2 * i + 1]);
     }
     (coordinates[0], coordinates[1], coordinates[2], coordinates[3])

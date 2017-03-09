@@ -1,5 +1,3 @@
-#![feature(convert)]
-
 #[macro_use] extern crate log;
 extern crate env_logger;
 
@@ -7,8 +5,6 @@ extern crate env_logger;
 mod simulation;
 mod output;
 mod utils;
-
-use std::io;
 
 fn main() {
     env_logger::init().unwrap();

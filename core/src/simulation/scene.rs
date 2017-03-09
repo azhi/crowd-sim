@@ -1,7 +1,5 @@
 extern crate anymap;
-extern crate linked_list;
 
-use self::linked_list::LinkedList;
 use self::anymap::AnyMap;
 
 use ::simulation::person::Person;
@@ -9,12 +7,11 @@ use ::simulation::forces::Forces;
 
 use ::utils::linelg::Line;
 use ::utils::linelg::Point;
-use ::utils::linelg::distance::DistanceTo;
-
+use ::utils::linelg::distance::DistanceTo; 
 pub const APPROX_PERSON_RADIUS: f64 = 0.5_f64;
 
 pub struct Scene {
-    pub people: LinkedList<Person>,
+    pub people: Vec<Person>,
     pub geometry: Vec<Line>,
     paths: Vec<Path>,
     pub scale: f64,
@@ -62,7 +59,7 @@ impl Scene {
         let parsed_geometry = Scene::parse_walls(scene_walls);
         let parsed_paths = Scene::parse_paths(scene_spawn_areas, scene_target_areas, spawn_rate);
 
-        Scene{ people: LinkedList::new(), geometry: parsed_geometry, paths: parsed_paths,
+        Scene{ people: Vec::new(), geometry: parsed_geometry, paths: parsed_paths,
                scale: scene_scale, width: scene_width, height: scene_height }
     }
 
@@ -122,7 +119,7 @@ impl Scene {
         let path = &self.paths[path_index];
 
         let mut coordinates: Option<Point> = None;
-        for i in (1 .. 10) {
+        for _i in 1..10 {
             let try_point = Point::new(
                 ::utils::distributions::generate_uniform(path.spawn_area.area.p0.x, path.spawn_area.area.p1.x),
                 ::utils::distributions::generate_uniform(path.spawn_area.area.p0.y, path.spawn_area.area.p1.y)
@@ -135,15 +132,17 @@ impl Scene {
 
         match coordinates {
             Some(point) => {
+                let current_target_point = path.target_areas[0].random_inside();
+                let heading = current_target_point - point;
                 let new_person = Person{
                     coordinates: point.clone(),
-                    heading: 270_f64.to_radians(),
+                    heading: heading.y.atan2(heading.x),
                     path_id: path.id,
                     current_target_index: 0,
-                    current_target_point: path.target_areas[0].random_inside(),
+                    current_target_point: current_target_point,
                     forces_params: forces.generate_person_forces_param()
                 };
-                self.people.push_back(new_person);
+                self.people.push(new_person);
             },
             None => warn!("Couldn't find a place for a new person in 10 attempts, skipping ...")
         }
@@ -161,34 +160,24 @@ impl Scene {
     }
 
     pub fn process_reached_destination_people(&mut self) {
-        let mut cursor = self.people.cursor();
-        loop {
-            let next_or_remove = match cursor.peek_next() {
-                Some(person) => {
-                    if person.reached_destination(&self.paths[person.path_id as usize]) {
-                        person.current_target_index += 1;
-                        let ref path = self.paths[person.path_id as usize];
-                        if (person.current_target_index as usize) < path.target_areas.len() {
-                            person.current_target_point = path.target_areas[person.current_target_index as usize].random_inside();
-                            // next
-                            true
-                        } else {
-                            // remove
-                            false
-                        }
-                    } else {
-                        // next
-                        true
-                    }
+        let cloned_people = self.people.clone();
+        self.people = cloned_people.into_iter().filter_map(|mut person|
+            if person.reached_destination(&self.paths[person.path_id as usize]) {
+                person.current_target_index += 1;
+                let ref path = self.paths[person.path_id as usize];
+                if (person.current_target_index as usize) < path.target_areas.len() {
+                    person.current_target_point = path.target_areas[person.current_target_index as usize].random_inside();
+                    // person has next target, do not filter him
+                    Some(person)
+                } else {
+                    // person reached his final target, filter him out
+                    None
                 }
-                None => break
-            };
-            if next_or_remove {
-                cursor.next();
             } else {
-                cursor.remove();
+                // person in on the way to his next target, do not filter him
+                Some(person)
             }
-        }
+        ).collect();
     }
 
     pub fn get_density_map(&self) -> Vec<Vec<f64>> {
@@ -196,10 +185,10 @@ impl Scene {
 
         let mut res = Vec::new();
         res.reserve(self.height as usize);
-        for i in (0 .. self.height) {
+        for _i in 0..self.height {
             let mut inner_vec = Vec::new();
             inner_vec.reserve(self.width as usize);
-            for j in (0 .. self.width) {
+            for _j in 0..self.width {
                 inner_vec.push(0_f64);
             }
             res.push(inner_vec);
@@ -207,12 +196,12 @@ impl Scene {
 
         let effective_c = (KERNEL_C / self.scale).round() as i32;
         for person in &self.people {
-            for i in (person.coordinates.y as i32 - 3 * effective_c .. person.coordinates.y as i32 + 3 * effective_c) {
-                for j in (person.coordinates.x as i32 - 3 * effective_c .. person.coordinates.x as i32 + 3 * effective_c) {
+            for i in person.coordinates.y as i32 - 3 * effective_c .. person.coordinates.y as i32 + 3 * effective_c {
+                for j in person.coordinates.x as i32 - 3 * effective_c .. person.coordinates.x as i32 + 3 * effective_c {
                     if i > 0 && i < self.height as i32 &&
                        j > 0 && j < self.width  as i32 {
                         let density_point = Point::new(j as f64, i as f64);
-                        let density_addition = (1_f64 - density_point.distance_sqr(&person.coordinates) / 9_f64 / (effective_c as f64).powi(2));
+                        let density_addition = 1_f64 - density_point.distance_sqr(&person.coordinates) / 9_f64 / (effective_c as f64).powi(2);
                         if density_addition > 0_f64 {
                             res[i as usize][j as usize] += density_addition.powi(2);
                         }

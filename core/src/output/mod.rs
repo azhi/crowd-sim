@@ -1,7 +1,5 @@
 extern crate anymap;
-extern crate linked_list;
 
-use self::linked_list::LinkedList;
 use self::anymap::AnyMap;
 
 use std;
@@ -63,7 +61,7 @@ impl Output {
         self.dump_people_location(&mut out, &simulation.scene.people);
     }
 
-    fn dump_people_location(&self, out: &mut Write, people: &LinkedList<Person>) {
+    fn dump_people_location(&self, out: &mut Write, people: &Vec<Person>) {
         // debug!("People {}", people.len());
         self.write_u32(out, people.len() as u32);
         for person in people.iter() {
@@ -75,8 +73,8 @@ impl Output {
 
     fn dump_density_map(&self, out: &mut Write, density_map: &Vec<Vec<f64>>) {
         let mut values_to_write = Vec::new();
-        for i in (0 .. density_map.len()) {
-            for j in (0 .. density_map[i].len()) {
+        for i in 0..density_map.len() {
+            for j in 0..density_map[i].len() {
                 let value = density_map[i][j];
                 if value > self.density_map_min_threshold {
                     values_to_write.push((j, i, value));

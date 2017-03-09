@@ -7,7 +7,6 @@ authors = ["azhi <astzhe@gmail.com>"]
 log = "0.3"
 env_logger = "0.3"
 rand = "0.3"
-linked-list = "0.0.2"
 time = "0.1"
 
 [dependencies.anymap]

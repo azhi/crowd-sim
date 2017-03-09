@@ -6,9 +6,9 @@ use configuration::DistributionValue;
 
 pub fn generate(distribution_info: &DistributionValue) -> f64 {
     match *distribution_info {
-        DistributionValue::UniformDistributionValue{from: from, to: to} => generate_uniform(from, to),
-        DistributionValue::NormalDistributionValue{mean: mean, std_deviation: std_deviation} => generate_normal(mean, std_deviation),
-        DistributionValue::TimeInfiniteDistributionValue{avg_rate: avg_rate, rate_deviation: rate_deviation} => avg_rate * rate_deviation,
+        DistributionValue::UniformDistributionValue{from, to} => generate_uniform(from, to),
+        DistributionValue::NormalDistributionValue{mean, std_deviation} => generate_normal(mean, std_deviation),
+        DistributionValue::TimeInfiniteDistributionValue{avg_rate, rate_deviation} => avg_rate * rate_deviation,
     }
 }
 
@@ -22,7 +22,7 @@ pub fn generate_normal(mean: f64, std_deviation: f64) -> f64 {
     let mut sum = 0.0f64;
     let mut rng = rand::thread_rng();
 
-    for i in (0 .. group_n) {
+    for _i in 0..group_n {
         sum += rng.gen::<f64>();
     }
 

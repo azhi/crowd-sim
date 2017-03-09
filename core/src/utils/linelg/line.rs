@@ -1,5 +1,5 @@
 use std::f64;
-use std::ops::{Add, Sub, Mul, Div, Neg, Index, IndexMut};
+use std::ops::Neg;
 use utils::linelg::Point;
 use utils::linelg::distance::DistanceTo;
 
