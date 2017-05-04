@@ -12,6 +12,11 @@ module Sections
       super(nil, root_str)
     end
 
+    GENERAL_SECTION = 0x00
+    GENERAL_ELEMENTS = {'type' => 0x01}
+    GENERAL_ELEMENTS_TEMPLATES = {'type' => 'C'}
+
+    field name: 'type', type: :enum, values: {'flow' => 0x01, 'escape' => 0x02}, default: 'flow'
     field name: 'scene', type: :descendant, klass: 'Scene'
     field name: 'time', type: :descendant, klass: 'Time'
     field name: 'spawn', type: :descendant, klass: 'Spawn'
@@ -33,6 +38,13 @@ module Sections
         res
       end
       value
+    end
+
+    def to_config
+      config = ""
+      config += [GENERAL_SECTION, GENERAL_ELEMENTS['type'], get_data('type')].pack(CONFIG_ITEM_TEMPLATE_PREFIX + GENERAL_ELEMENTS_TEMPLATES['type'])
+      config += super.to_s
+      config
     end
   end
 end

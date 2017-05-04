@@ -26,6 +26,12 @@ pub enum DistributionValue {
 }
 
 #[derive(Debug,Clone)]
+pub enum Type {
+    Flow,
+    Escape
+}
+
+#[derive(Debug,Clone)]
 pub struct SceneWidth(pub u16);
 #[derive(Debug,Clone)]
 pub struct SceneHeight(pub u16);
@@ -105,6 +111,7 @@ fn parse_single_item(config: &mut AnyMap, file: &mut Read, buf : &mut [u8]) -> b
     if read != 0 {
         let section = buf[0];
         match section {
+            0x00 => parse_general_item(config, file, buf),
             0x01 => parse_scene_item(config, file, buf),
             0x02 => parse_time_item(config, file, buf),
             0x03 => parse_spawn_item(config, file, buf),
@@ -119,6 +126,23 @@ fn parse_single_item(config: &mut AnyMap, file: &mut Read, buf : &mut [u8]) -> b
     } else {
         false
     }
+}
+
+fn parse_general_item(config: &mut AnyMap, file: &mut Read, buf : &mut [u8]) {
+    let element = parse_u16(file, buf);
+    match element {
+        0x01 => {
+            let typ = parse_u8(file, buf);
+            let config_typ = match typ {
+                0x01 => Type::Flow,
+                0x02 => Type::Escape,
+                _ => panic!("Unknown type in general config: {}", typ)
+            };
+            debug!("Parsed Type: {:?}", config_typ);
+            config.insert(config_typ);
+        },
+        _ => panic!("Unknown element in general config: {}", element)
+    };
 }
 
 fn parse_scene_item(config: &mut AnyMap, file: &mut Read, buf : &mut [u8]) {

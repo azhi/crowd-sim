@@ -5,9 +5,11 @@ module Sections
     CONFIG_ITEM_TEMPLATE_PREFIX = "CS>"
 
     def self.field(name:, type: nil, klass: nil, parser: nil, default: nil,
-                   current_section: nil, element: nil, context_defaults: {})
+                   values: [], current_section: nil, element: nil,
+                   context_defaults: {})
       @fields ||= {}
-      @fields[name] = {name: name, type: type, klass: klass, parser: parser, default: default,
+      @fields[name] = {name: name, type: type, klass: klass, parser: parser,
+                       default: default, values: values,
                        current_section: current_section, element: element,
                        context_defaults: context_defaults}
       define_method name do |val = nil, &blc|
@@ -50,6 +52,9 @@ module Sections
               when :float then value.to_f
               when :string then value.to_s
               when :bool then !!value
+              when :enum
+                field[:values][value] ||
+                  raise("Value #{value} for parameter #{field[:name]} is not included in the values list #{field[:values].keys.inspect}")
               when :descendant
                 klass = field[:klass].split('::').inject(Sections) do |res, kl|
                   raise 'Requested descendant class not found!' unless res
