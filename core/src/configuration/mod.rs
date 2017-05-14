@@ -26,10 +26,13 @@ pub enum DistributionValue {
 }
 
 #[derive(Debug,Clone)]
-pub enum Type {
+pub enum SimType {
     Flow,
     Escape
 }
+
+#[derive(Debug,Clone)]
+pub struct SimTypeCfgWrap(pub SimType);
 
 #[derive(Debug,Clone)]
 pub struct SceneWidth(pub u16);
@@ -134,12 +137,12 @@ fn parse_general_item(config: &mut AnyMap, file: &mut Read, buf : &mut [u8]) {
         0x01 => {
             let typ = parse_u8(file, buf);
             let config_typ = match typ {
-                0x01 => Type::Flow,
-                0x02 => Type::Escape,
+                0x01 => SimType::Flow,
+                0x02 => SimType::Escape,
                 _ => panic!("Unknown type in general config: {}", typ)
             };
-            debug!("Parsed Type: {:?}", config_typ);
-            config.insert(config_typ);
+            debug!("Parsed SimType: {:?}", config_typ);
+            config.insert(SimTypeCfgWrap(config_typ));
         },
         _ => panic!("Unknown element in general config: {}", element)
     };

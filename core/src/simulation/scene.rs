@@ -159,8 +159,9 @@ impl Scene {
         free
     }
 
-    pub fn process_reached_destination_people(&mut self) {
+    pub fn process_reached_destination_people(&mut self) -> Vec<Person> {
         let cloned_people = self.people.clone();
+        let mut reached_destination_people = Vec::new();
         self.people = cloned_people.into_iter().filter_map(|mut person|
             if person.reached_destination(&self.paths[person.path_id as usize]) {
                 person.current_target_index += 1;
@@ -170,7 +171,8 @@ impl Scene {
                     // person has next target, do not filter him
                     Some(person)
                 } else {
-                    // person reached his final target, filter him out
+                    // person reached his final target, save him for returning & filter out from people
+                    reached_destination_people.push(person);
                     None
                 }
             } else {
@@ -178,6 +180,8 @@ impl Scene {
                 Some(person)
             }
         ).collect();
+
+        return reached_destination_people;
     }
 
     pub fn get_density_map(&self) -> Vec<Vec<f64>> {

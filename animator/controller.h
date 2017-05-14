@@ -12,9 +12,12 @@ struct ControllerData {
   double person_file_scale;
   char* scene_file_name;
   double scene_scale;
-
-  unsigned char density_map_enabled;
 };
+
+#define CURRENT_TIME_TYPE 0
+#define LOCATIONS_TYPE 1
+#define DENSITY_MAP_TYPE 2
+#define STATISTICS_TYPE 3
 
 void controller_init_sdl(struct ControllerData*);
 void controller_read_init_message(struct ControllerData*);

@@ -4,8 +4,11 @@
 #include <cairo.h>
 #include <librsvg/rsvg.h>
 
+#define MAIN_FONT_FILE_PATH "/usr/share/fonts/TTF/DejaVuSerif.ttf"
+
 SDL_Texture* sdl_load_svg(struct SDLData* sdl_data, const char* file, double scale, double angle);
 void sdl_error(const char* msg);
+void ttf_error(const char* msg);
 void rsvg_error(const char* msg, GError* err);
 void cairo_error(const char* msg);
 
@@ -13,8 +16,15 @@ void sdl_init(struct SDLData* sdl_data, const char* window_title)
 {
   if (SDL_Init(SDL_INIT_EVERYTHING) != 0) {
     sdl_error("SDL_Init");
-    exit(1);
   }
+
+  if (TTF_Init() != 0) {
+    ttf_error("TTF_Init");
+  }
+
+  sdl_data->main_font = TTF_OpenFont(MAIN_FONT_FILE_PATH, 16);
+  if (sdl_data->main_font == NULL)
+    ttf_error("TTF_OpenFont");
 
   sdl_data->window = SDL_CreateWindow(window_title, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT,
     SDL_WINDOW_SHOWN);
@@ -129,6 +139,65 @@ void sdl_clear_density(struct SDLData* sdl_data)
     }
 }
 
+SDL_Texture* sdl_get_statistics_texture(struct SDLData* sdl_data, char* statistics_text)
+{
+  Uint32 rmask = 0x00ff0000;
+  Uint32 gmask = 0x0000ff00;
+  Uint32 bmask = 0x000000ff;
+  Uint32 amask = 0xff000000;
+  int bpp = 32;
+  int btpp = 4;
+  int stride = sdl_data->scene_width * btpp;
+
+  Uint32* faded_bg = malloc(sdl_data->scene_width * sdl_data->scene_height * btpp);
+  for(int i = 0; i < sdl_data->scene_width * sdl_data->scene_height; i++) {
+    faded_bg[i] = 0xdd999999;
+  }
+
+  SDL_Surface *sdl_surface = SDL_CreateRGBSurfaceFrom((void *) faded_bg, sdl_data->scene_width, sdl_data->scene_height,
+    bpp, stride, rmask, gmask, bmask, amask);
+
+  if (sdl_surface == NULL)
+    sdl_error("SDL_CreateRGBSurfaceFrom");
+
+  SDL_Color text_color = {0, 0, 0, 255};
+  SDL_Surface* text_surface = TTF_RenderText_Blended_Wrapped(sdl_data->main_font, statistics_text, text_color, round(sdl_data->scene_width * 0.5));
+
+  if (text_surface == NULL)
+    ttf_error("TTF_RenderText_Blended");
+
+  SDL_Rect dst = {sdl_data->scene_width / 2 - text_surface->w / 2, sdl_data->scene_height / 2 - text_surface->h / 2, text_surface->w, text_surface->h};
+  int res = SDL_BlitSurface(text_surface, NULL, sdl_surface, &dst);
+  if (res != 0) {
+    sdl_error("SDL_BlitSurface");
+  }
+
+  SDL_Texture *tex = SDL_CreateTextureFromSurface(sdl_data->renderer, sdl_surface);
+
+  if (tex == NULL)
+    sdl_error("SDL_CreateTextureFromSurface");
+
+  SDL_FreeSurface(sdl_surface);
+  SDL_FreeSurface(text_surface);
+
+  return tex;
+}
+
+unsigned char sdl_is_spacebar_pressed(struct SDLData* sdl_data)
+{
+  unsigned char spacebar_pressed = 0;
+  SDL_Event event;
+  while (SDL_PollEvent(&event)) {
+    if (event.type == SDL_KEYUP) {
+      if (event.key.keysym.sym == SDLK_SPACE) {
+        spacebar_pressed = 1;
+      }
+    }
+  }
+  return spacebar_pressed;
+}
+
+
 void sdl_clr(struct SDLData* sdl_data)
 {
   SDL_RenderClear(sdl_data->renderer);
@@ -148,6 +217,7 @@ void sdl_shutdown(struct SDLData* sdl_data)
   SDL_DestroyTexture(sdl_data->background);
   SDL_DestroyRenderer(sdl_data->renderer);
   SDL_DestroyWindow(sdl_data->window);
+  TTF_CloseFont(sdl_data->main_font);
   SDL_Quit();
 }
 
@@ -241,6 +311,12 @@ SDL_Texture* sdl_load_svg(struct SDLData* sdl_data, const char* file, double sca
 void sdl_error(const char* msg)
 {
   fprintf(stderr, "[SDL] Error: %s - %s\n", msg, SDL_GetError());
+  exit(1);
+}
+
+void ttf_error(const char* msg)
+{
+  fprintf(stderr, "[SDL_TTF] Error: %s - %s\n", msg, TTF_GetError());
   exit(1);
 }
 

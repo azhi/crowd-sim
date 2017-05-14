@@ -2,6 +2,7 @@
 #define _SDL_H_
 
 #include <SDL.h>
+#include <SDL_ttf.h>
 
 #define SCREEN_WIDTH 1280
 #define SCREEN_HEIGHT 720
@@ -12,6 +13,7 @@ struct SDLData {
   SDL_Texture* background;
 
   SDL_Texture* person_textures[360];
+  TTF_Font* main_font;
 
   double density_map_min_threshold;
   double density_map_max_threshold;
@@ -29,6 +31,8 @@ void sdl_draw_person(struct SDLData*, int x, int y, double heading);
 void sdl_set_density(struct SDLData*, int x, int y, double density);
 void sdl_clear_density(struct SDLData*);
 void sdl_draw_density(struct SDLData*);
+SDL_Texture* sdl_get_statistics_texture(struct SDLData*, char* statistics_text);
+unsigned char sdl_is_spacebar_pressed(struct SDLData*);
 
 void sdl_clr(struct SDLData*);
 void sdl_update(struct SDLData*);

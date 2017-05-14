@@ -8,6 +8,11 @@ use std::io::prelude::*;
 use ::simulation::Simulation;
 use ::simulation::person::Person;
 
+const CURRENT_TIME_TYPE: u8 = 0_u8;
+const LOCATIONS_TYPE: u8 = 1_u8;
+const DENSITY_MAP_TYPE: u8 = 2_u8;
+const STATISTICS_TYPE: u8 = 3_u8;
+
 pub struct Output {
     scene_file_name: String,
     scene_scale: f64,
@@ -36,24 +41,20 @@ impl Output {
         let mut out = ::std::io::stdout();
         self.write_string(&mut out, &self.scene_file_name);
         self.write_f64(&mut out, self.scene_scale);
-        let density_map_enabled_num = if self.density_map_enabled { 1_u8 } else { 0_u8 };
-        self.write_u8(&mut out, density_map_enabled_num);
         self.write_f64(&mut out, self.density_map_min_threshold);
         self.write_f64(&mut out, self.density_map_max_threshold);
     }
 
     pub fn dump_state(&mut self, simulation: &Simulation) {
         let mut out = ::std::io::stdout();
-        let current_time = simulation.time.current_time;
-        self.write_f64(&mut out, current_time);
+
+        self.dump_current_time(&mut out, simulation);
 
         if self.density_map_enabled {
             if self.ticks_without_density == 0 {
-                self.write_u8(&mut out, 1_u8);
                 self.dump_density_map(&mut out, &simulation.scene.get_density_map());
                 self.ticks_without_density = (1_f64 / simulation.time.tick).ceil() as u32;
             } else {
-                self.write_u8(&mut out, 0_u8);
                 self.ticks_without_density -= 1;
             }
         }
@@ -61,7 +62,29 @@ impl Output {
         self.dump_people_location(&mut out, &simulation.scene.people);
     }
 
-    fn dump_people_location(&self, out: &mut Write, people: &Vec<Person>) {
+    pub fn dump_statistics(&mut self, simulation: &Simulation) {
+        let mut out = ::std::io::stdout();
+        let current_time = simulation.time.current_time;
+        self.write_f64(&mut out, current_time);
+
+        self.write_u8(&mut out, STATISTICS_TYPE);
+        let ref statistic_item = simulation.statistics.travel_time;
+        self.write_f64(&mut out, statistic_item.min);
+        self.write_f64(&mut out, statistic_item.max);
+        self.write_u32(&mut out, statistic_item.count);
+        self.write_f64(&mut out, statistic_item.current_avg());
+        self.write_f64(&mut out, statistic_item.current_variance());
+        self.write_f64(&mut out, statistic_item.current_std_deviation());
+    }
+
+    fn dump_current_time(&mut self, mut out: &mut Write, simulation: &Simulation) {
+        let current_time = simulation.time.current_time;
+        self.write_u8(&mut out, CURRENT_TIME_TYPE);
+        self.write_f64(&mut out, current_time);
+    }
+
+    fn dump_people_location(&self, mut out: &mut Write, people: &Vec<Person>) {
+        self.write_u8(&mut out, LOCATIONS_TYPE);
         // debug!("People {}", people.len());
         self.write_u32(out, people.len() as u32);
         for person in people.iter() {
@@ -71,7 +94,8 @@ impl Output {
         }
     }
 
-    fn dump_density_map(&self, out: &mut Write, density_map: &Vec<Vec<f64>>) {
+    fn dump_density_map(&self, mut out: &mut Write, density_map: &Vec<Vec<f64>>) {
+        self.write_u8(&mut out, DENSITY_MAP_TYPE);
         let mut values_to_write = Vec::new();
         for i in 0..density_map.len() {
             for j in 0..density_map[i].len() {
