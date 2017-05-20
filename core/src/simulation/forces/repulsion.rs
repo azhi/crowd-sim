@@ -26,7 +26,7 @@ impl RepulsionForce {
             let angle = direction.y.atan2(direction.x);
             let ellipse_coeff = ::utils::linelg::ellipse_sqr_radius_at_angle(REPULSION_ELLIPSE_R_X, REPULSION_ELLIPSE_R_Y, angle);
             // let distance_coeff = 1_f64 / ((direction_length_sqr_in_meters.sqrt() - ::simulation::scene::APPROX_PERSON_RADIUS) * 5_f64);
-            let distance_coeff = (- 1_f64 / 2.5_f64 * (direction_length_sqr_in_meters.sqrt() - ::simulation::scene::APPROX_PERSON_RADIUS) + 3_f64).max(0_f64).min(3_f64);
+            let distance_coeff = (- 1_f64 / 1_f64 * (direction_length_sqr_in_meters.sqrt() - ::simulation::scene::APPROX_PERSON_RADIUS) + 3_f64).max(0_f64).min(3_f64);
             let fov_coeff = person.fov_coeff(nearest_point);
             - direction.normalized() * distance_coeff * fov_coeff * ellipse_coeff.sqrt()
         } else {
@@ -41,10 +41,10 @@ impl Forceable for RepulsionForce {
         let repulsion_coeff = person.forces_params.repulsion_coeff;
         let mut force = Vector::zero();
         for obstacle in scene.geometry.iter() {
-            force = force + 2_f64 * self.repulsion_from_obstacle(&person, obstacle, scene.scale);
+            force = force + self.repulsion_from_obstacle(&person, obstacle, scene.scale);
         }
         for other_person in scene.people.iter() {
-            force = force + self.repulsion_from_obstacle(&person, &other_person.coordinates, scene.scale);
+            force = force + self.repulsion_from_obstacle(&person, &other_person.coordinates, scene.scale) / 2_f64;
         }
         let force_power = force.length().min(4_f64);
         if force_power != 0_f64 {
