@@ -8,7 +8,7 @@ use ::simulation::forces::Forces;
 use ::utils::linelg::Line;
 use ::utils::linelg::Point;
 use ::utils::linelg::distance::DistanceTo; 
-pub const APPROX_PERSON_RADIUS: f64 = 0.5_f64;
+pub const APPROX_PERSON_RADIUS: f64 = 0.4_f64;
 
 pub struct Scene {
     pub people: Vec<Person>,
