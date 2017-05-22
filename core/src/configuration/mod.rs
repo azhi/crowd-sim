@@ -334,7 +334,7 @@ fn parse_density_map_item(config: &mut AnyMap, file: &mut Read, buf : &mut [u8])
 
 fn parse_coordinates(file: &mut Read, buf : &mut [u8]) -> (u16, u16, u16, u16) {
     let mut coordinates = [0u16; 4];
-    file.read(&mut buf[0 .. 8]).ok().expect("Can't read from file");
+    read_n_bytes(file, buf, 8);
     for i in 0..4 {
         coordinates[i] = two_u8le_to_u16(buf[2 * i], buf[2 * i + 1]);
     }
@@ -362,7 +362,7 @@ fn parse_distribution(file: &mut Read, buf : &mut [u8]) -> DistributionValue {
 
 fn parse_string(file: &mut Read, buf : &mut [u8]) -> String {
     let string_length = parse_u16(file, buf);
-    file.read(&mut buf[0 .. string_length as usize]).ok().expect("Can't read from file");
+    read_n_bytes(file, buf, string_length as usize);
     let mut string_bin = Vec::new();
     for &x in (&buf[0 .. string_length as usize]).iter() {
         string_bin.push(x);
@@ -372,22 +372,22 @@ fn parse_string(file: &mut Read, buf : &mut [u8]) -> String {
 }
 
 fn parse_u8(file: &mut Read, buf : &mut [u8]) -> u8 {
-    file.read(&mut buf[0 .. 1]).ok().expect("Can't read from file");
+    read_n_bytes(file, buf, 1);
     buf[0]
 }
 
 fn parse_u16(file: &mut Read, buf : &mut [u8]) -> u16 {
-    file.read(&mut buf[0 .. 2]).ok().expect("Can't read from file");
+    read_n_bytes(file, buf, 2);
     two_u8le_to_u16(buf[0], buf[1])
 }
 
 fn parse_u32(file: &mut Read, buf : &mut [u8]) -> u32 {
-    file.read(&mut buf[0 .. 4]).ok().expect("Can't read from file");
+    read_n_bytes(file, buf, 4);
     four_u8le_to_u32(buf[0], buf[1], buf[2], buf[3])
 }
 
 fn parse_f64(file: &mut Read, buf : &mut [u8]) -> f64 {
-    file.read(&mut buf[0 .. 8]).ok().expect("Can't read from file");
+    read_n_bytes(file, buf, 8);
     let mut value_bin = [0u8; 8];
     for (&x, p) in (&buf[0 .. 8]).iter().zip(value_bin.iter_mut()) {
         *p = x;
@@ -408,4 +408,11 @@ fn four_u8le_to_u32(x1: u8, x2: u8, x3: u8, x4: u8) -> u32 {
         ((x3 as u32) << 8)  & 0x0000FF00 |
         (x4 as u32);
     result
+}
+
+fn read_n_bytes(file: &mut Read, buf : &mut [u8], n: usize) {
+    let mut read = 0_usize;
+    while read != n {
+        read += file.read(&mut buf[read ..  n]).ok().expect("Can't read from file");
+    }
 }
