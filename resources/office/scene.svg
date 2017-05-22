@@ -1,5 +1,5 @@
-<svg height="200" width="1100">
-  <rect x="0" y="0" width="1100" height="400" style="fill:white" />
+<svg height="285" width="1100">
+  <rect x="0" y="0" width="1100" height="285" style="fill:white" />
 
   <!-- outer shell -->
   <line x1="0" y1="85" x2="0" y2="200" style="stroke:rgb(0,0,0); stroke-width:3" x-csim-class="wall" />
@@ -660,13 +660,8 @@
 
   <!-- walls -->
 
-  <line x1="580" y1="134" x2="710" y2="134" style="stroke:rgb(0,0,0);" x-csim-class="wall" />
-  <line x1="710" y1="130" x2="710" y2="134" style="stroke:rgb(0,0,0);" x-csim-class="wall" />
-  <line x1="580" y1="130" x2="710" y2="130" style="stroke:rgb(0,0,0);" x-csim-class="wall" />
-
-  <line x1="717" y1="134" x2="730" y2="134" style="stroke:rgb(0,0,0);" x-csim-class="wall" />
-  <line x1="717" y1="130" x2="717" y2="134" style="stroke:rgb(0,0,0);" x-csim-class="wall" />
-  <line x1="717" y1="130" x2="730" y2="130" style="stroke:rgb(0,0,0);" x-csim-class="wall" />
+  <line x1="580" y1="132" x2="709" y2="132" style="stroke:rgb(0,0,0);" x-csim-class="wall" />
+  <line x1="718" y1="132" x2="730" y2="132" style="stroke:rgb(0,0,0);" x-csim-class="wall" />
 
   <rect x="590" y="120" width="7" height="7" style="fill:rgb(0,255,0);" x-csim-class="spawn-area" x-csim-id="50" />
   <rect x="650" y="120" width="7" height="7" style="fill:rgb(0,255,0);" x-csim-class="spawn-area" x-csim-id="51" />
@@ -1088,76 +1083,6 @@
   <rect x="942" y="105" width="10" height="5" style="fill:rgb(0,255,255);" x-csim-class="target-area" x-csim-id="85" x-csim-seq-no="1" x-csim-last="false"/>
   <rect x="860" y="100" width="10" height="15" style="fill:rgb(0,255,255);" x-csim-class="target-area" x-csim-id="85" x-csim-seq-no="2" x-csim-last="false"/>
   <rect x="847.5" y="145" width="15" height="10" style="fill:rgb(0,255,255);" x-csim-class="target-area" x-csim-id="85" x-csim-seq-no="3" x-csim-last="true"/>
-
-  <rect x="970" y="140" width="5" height="8" style="fill:rgb(0,255,255);" x-csim-class="target-area" x-csim-id="76" x-csim-seq-no="0" x-csim-last="false"/>
-  <rect x="960" y="140" width="5" height="8" style="fill:rgb(0,255,255);" x-csim-class="target-area" x-csim-id="76" x-csim-seq-no="1" x-csim-last="false"/>
-  <rect x="942" y="115" width="10" height="5" style="fill:rgb(0,255,255);" x-csim-class="target-area" x-csim-id="76" x-csim-seq-no="2" x-csim-last="false"/>
-  <rect x="942" y="105" width="10" height="5" style="fill:rgb(0,255,255);" x-csim-class="target-area" x-csim-id="76" x-csim-seq-no="3" x-csim-last="false"/>
-  <rect x="860" y="100" width="10" height="15" style="fill:rgb(0,255,255);" x-csim-class="target-area" x-csim-id="76" x-csim-seq-no="4" x-csim-last="false"/>
-  <rect x="847.5" y="145" width="15" height="10" style="fill:rgb(0,255,255);" x-csim-class="target-area" x-csim-id="76" x-csim-seq-no="5" x-csim-last="true"/>
-
-  <rect x="970" y="140" width="5" height="8" style="fill:rgb(0,255,255);" x-csim-class="target-area" x-csim-id="77" x-csim-seq-no="0" x-csim-last="false"/>
-  <rect x="960" y="140" width="5" height="8" style="fill:rgb(0,255,255);" x-csim-class="target-area" x-csim-id="77" x-csim-seq-no="1" x-csim-last="false"/>
-  <rect x="942" y="115" width="10" height="5" style="fill:rgb(0,255,255);" x-csim-class="target-area" x-csim-id="77" x-csim-seq-no="2" x-csim-last="false"/>
-  <rect x="942" y="105" width="10" height="5" style="fill:rgb(0,255,255);" x-csim-class="target-area" x-csim-id="77" x-csim-seq-no="3" x-csim-last="false"/>
-  <rect x="860" y="100" width="10" height="15" style="fill:rgb(0,255,255);" x-csim-class="target-area" x-csim-id="77" x-csim-seq-no="4" x-csim-last="false"/>
-  <rect x="847.5" y="145" width="15" height="10" style="fill:rgb(0,255,255);" x-csim-class="target-area" x-csim-id="77" x-csim-seq-no="5" x-csim-last="true"/>
-
-  <rect x="970" y="140" width="5" height="8" style="fill:rgb(0,255,255);" x-csim-class="target-area" x-csim-id="78" x-csim-seq-no="0" x-csim-last="false"/>
-  <rect x="960" y="140" width="5" height="8" style="fill:rgb(0,255,255);" x-csim-class="target-area" x-csim-id="78" x-csim-seq-no="1" x-csim-last="false"/>
-  <rect x="942" y="115" width="10" height="5" style="fill:rgb(0,255,255);" x-csim-class="target-area" x-csim-id="78" x-csim-seq-no="2" x-csim-last="false"/>
-  <rect x="942" y="105" width="10" height="5" style="fill:rgb(0,255,255);" x-csim-class="target-area" x-csim-id="78" x-csim-seq-no="3" x-csim-last="false"/>
-  <rect x="860" y="100" width="10" height="15" style="fill:rgb(0,255,255);" x-csim-class="target-area" x-csim-id="78" x-csim-seq-no="4" x-csim-last="false"/>
-  <rect x="847.5" y="145" width="15" height="10" style="fill:rgb(0,255,255);" x-csim-class="target-area" x-csim-id="78" x-csim-seq-no="5" x-csim-last="true"/>
-
-  <rect x="970" y="140" width="5" height="8" style="fill:rgb(0,255,255);" x-csim-class="target-area" x-csim-id="79" x-csim-seq-no="0" x-csim-last="false"/>
-  <rect x="960" y="140" width="5" height="8" style="fill:rgb(0,255,255);" x-csim-class="target-area" x-csim-id="79" x-csim-seq-no="1" x-csim-last="false"/>
-  <rect x="942" y="115" width="10" height="5" style="fill:rgb(0,255,255);" x-csim-class="target-area" x-csim-id="79" x-csim-seq-no="2" x-csim-last="false"/>
-  <rect x="942" y="105" width="10" height="5" style="fill:rgb(0,255,255);" x-csim-class="target-area" x-csim-id="79" x-csim-seq-no="3" x-csim-last="false"/>
-  <rect x="860" y="100" width="10" height="15" style="fill:rgb(0,255,255);" x-csim-class="target-area" x-csim-id="79" x-csim-seq-no="4" x-csim-last="false"/>
-  <rect x="847.5" y="145" width="15" height="10" style="fill:rgb(0,255,255);" x-csim-class="target-area" x-csim-id="79" x-csim-seq-no="5" x-csim-last="true"/>
-
-  <rect x="970" y="140" width="5" height="8" style="fill:rgb(0,255,255);" x-csim-class="target-area" x-csim-id="80" x-csim-seq-no="0" x-csim-last="false"/>
-  <rect x="960" y="140" width="5" height="8" style="fill:rgb(0,255,255);" x-csim-class="target-area" x-csim-id="80" x-csim-seq-no="1" x-csim-last="false"/>
-  <rect x="942" y="115" width="10" height="5" style="fill:rgb(0,255,255);" x-csim-class="target-area" x-csim-id="80" x-csim-seq-no="2" x-csim-last="false"/>
-  <rect x="942" y="105" width="10" height="5" style="fill:rgb(0,255,255);" x-csim-class="target-area" x-csim-id="80" x-csim-seq-no="3" x-csim-last="false"/>
-  <rect x="860" y="100" width="10" height="15" style="fill:rgb(0,255,255);" x-csim-class="target-area" x-csim-id="80" x-csim-seq-no="4" x-csim-last="false"/>
-  <rect x="847.5" y="145" width="15" height="10" style="fill:rgb(0,255,255);" x-csim-class="target-area" x-csim-id="80" x-csim-seq-no="5" x-csim-last="true"/>
-
-  <rect x="970" y="140" width="5" height="8" style="fill:rgb(0,255,255);" x-csim-class="target-area" x-csim-id="81" x-csim-seq-no="0" x-csim-last="false"/>
-  <rect x="960" y="140" width="5" height="8" style="fill:rgb(0,255,255);" x-csim-class="target-area" x-csim-id="81" x-csim-seq-no="1" x-csim-last="false"/>
-  <rect x="942" y="115" width="10" height="5" style="fill:rgb(0,255,255);" x-csim-class="target-area" x-csim-id="81" x-csim-seq-no="2" x-csim-last="false"/>
-  <rect x="942" y="105" width="10" height="5" style="fill:rgb(0,255,255);" x-csim-class="target-area" x-csim-id="81" x-csim-seq-no="3" x-csim-last="false"/>
-  <rect x="860" y="100" width="10" height="15" style="fill:rgb(0,255,255);" x-csim-class="target-area" x-csim-id="81" x-csim-seq-no="4" x-csim-last="false"/>
-  <rect x="847.5" y="145" width="15" height="10" style="fill:rgb(0,255,255);" x-csim-class="target-area" x-csim-id="81" x-csim-seq-no="5" x-csim-last="true"/>
-
-  <rect x="970" y="140" width="5" height="8" style="fill:rgb(0,255,255);" x-csim-class="target-area" x-csim-id="82" x-csim-seq-no="0" x-csim-last="false"/>
-  <rect x="960" y="140" width="5" height="8" style="fill:rgb(0,255,255);" x-csim-class="target-area" x-csim-id="82" x-csim-seq-no="1" x-csim-last="false"/>
-  <rect x="942" y="115" width="10" height="5" style="fill:rgb(0,255,255);" x-csim-class="target-area" x-csim-id="82" x-csim-seq-no="2" x-csim-last="false"/>
-  <rect x="942" y="105" width="10" height="5" style="fill:rgb(0,255,255);" x-csim-class="target-area" x-csim-id="82" x-csim-seq-no="3" x-csim-last="false"/>
-  <rect x="860" y="100" width="10" height="15" style="fill:rgb(0,255,255);" x-csim-class="target-area" x-csim-id="82" x-csim-seq-no="4" x-csim-last="false"/>
-  <rect x="847.5" y="145" width="15" height="10" style="fill:rgb(0,255,255);" x-csim-class="target-area" x-csim-id="82" x-csim-seq-no="5" x-csim-last="true"/>
-
-  <rect x="970" y="140" width="5" height="8" style="fill:rgb(0,255,255);" x-csim-class="target-area" x-csim-id="83" x-csim-seq-no="0" x-csim-last="false"/>
-  <rect x="960" y="140" width="5" height="8" style="fill:rgb(0,255,255);" x-csim-class="target-area" x-csim-id="83" x-csim-seq-no="1" x-csim-last="false"/>
-  <rect x="942" y="115" width="10" height="5" style="fill:rgb(0,255,255);" x-csim-class="target-area" x-csim-id="83" x-csim-seq-no="2" x-csim-last="false"/>
-  <rect x="942" y="105" width="10" height="5" style="fill:rgb(0,255,255);" x-csim-class="target-area" x-csim-id="83" x-csim-seq-no="3" x-csim-last="false"/>
-  <rect x="860" y="100" width="10" height="15" style="fill:rgb(0,255,255);" x-csim-class="target-area" x-csim-id="83" x-csim-seq-no="4" x-csim-last="false"/>
-  <rect x="847.5" y="145" width="15" height="10" style="fill:rgb(0,255,255);" x-csim-class="target-area" x-csim-id="83" x-csim-seq-no="5" x-csim-last="true"/>
-
-  <rect x="970" y="140" width="5" height="8" style="fill:rgb(0,255,255);" x-csim-class="target-area" x-csim-id="84" x-csim-seq-no="0" x-csim-last="false"/>
-  <rect x="960" y="140" width="5" height="8" style="fill:rgb(0,255,255);" x-csim-class="target-area" x-csim-id="84" x-csim-seq-no="1" x-csim-last="false"/>
-  <rect x="942" y="115" width="10" height="5" style="fill:rgb(0,255,255);" x-csim-class="target-area" x-csim-id="84" x-csim-seq-no="2" x-csim-last="false"/>
-  <rect x="942" y="105" width="10" height="5" style="fill:rgb(0,255,255);" x-csim-class="target-area" x-csim-id="84" x-csim-seq-no="3" x-csim-last="false"/>
-  <rect x="860" y="100" width="10" height="15" style="fill:rgb(0,255,255);" x-csim-class="target-area" x-csim-id="84" x-csim-seq-no="4" x-csim-last="false"/>
-  <rect x="847.5" y="145" width="15" height="10" style="fill:rgb(0,255,255);" x-csim-class="target-area" x-csim-id="84" x-csim-seq-no="5" x-csim-last="true"/>
-
-  <rect x="970" y="140" width="5" height="8" style="fill:rgb(0,255,255);" x-csim-class="target-area" x-csim-id="85" x-csim-seq-no="0" x-csim-last="false"/>
-  <rect x="960" y="140" width="5" height="8" style="fill:rgb(0,255,255);" x-csim-class="target-area" x-csim-id="85" x-csim-seq-no="1" x-csim-last="false"/>
-  <rect x="942" y="115" width="10" height="5" style="fill:rgb(0,255,255);" x-csim-class="target-area" x-csim-id="85" x-csim-seq-no="2" x-csim-last="false"/>
-  <rect x="942" y="105" width="10" height="5" style="fill:rgb(0,255,255);" x-csim-class="target-area" x-csim-id="85" x-csim-seq-no="3" x-csim-last="false"/>
-  <rect x="860" y="100" width="10" height="15" style="fill:rgb(0,255,255);" x-csim-class="target-area" x-csim-id="85" x-csim-seq-no="4" x-csim-last="false"/>
-  <rect x="847.5" y="145" width="15" height="10" style="fill:rgb(0,255,255);" x-csim-class="target-area" x-csim-id="85" x-csim-seq-no="5" x-csim-last="true"/>
 
   <rect x="970" y="140" width="5" height="8" style="fill:rgb(0,255,255);" x-csim-class="target-area" x-csim-id="86" x-csim-seq-no="0" x-csim-last="false"/>
   <rect x="960" y="140" width="5" height="8" style="fill:rgb(0,255,255);" x-csim-class="target-area" x-csim-id="86" x-csim-seq-no="1" x-csim-last="false"/>
