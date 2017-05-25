@@ -1,5 +1,6 @@
 use utils::linelg::Point;
 use utils::linelg::Line;
+use utils::linelg::Rectangle;
 
 pub trait DistanceTo<T> {
     fn nearest_point(&self, other: &T) -> Point;
@@ -45,6 +46,43 @@ impl DistanceTo<Line> for Point {
 
     fn distance(&self, line: &Line) -> f64 {
         let nearest_point = self.nearest_point(line);
+        self.distance(&nearest_point)
+    }
+}
+
+impl DistanceTo<Rectangle> for Point {
+    fn nearest_point(&self, rectangle: &Rectangle) -> Point {
+        let mut nearest_point: Option<Point> = None;
+        let lines = [
+            Line::new(rectangle.p1, rectangle.p2),
+            Line::new(rectangle.p2, rectangle.p3),
+            Line::new(rectangle.p3, rectangle.p4),
+            Line::new(rectangle.p4, rectangle.p1),
+        ];
+        for line in lines.iter() {
+            let line_nearest_point = self.nearest_point(line);
+            nearest_point = match nearest_point {
+                Some(point) => if self.distance_sqr(&point) <= self.distance_sqr(&line_nearest_point) {
+                    Some(point)
+                } else {
+                    Some(line_nearest_point)
+                },
+                None => Some(line_nearest_point)
+            }
+        }
+        match nearest_point {
+            Some(point) => point,
+            None => panic!("This shouldn't ever be none ...")
+        }
+    }
+
+    fn distance_sqr(&self, rectangle: &Rectangle) -> f64 {
+        let nearest_point = self.nearest_point(rectangle);
+        self.distance_sqr(&nearest_point)
+    }
+
+    fn distance(&self, rectangle: &Rectangle) -> f64 {
+        let nearest_point = self.nearest_point(rectangle);
         self.distance(&nearest_point)
     }
 }

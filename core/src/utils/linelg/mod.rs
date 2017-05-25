@@ -5,10 +5,12 @@ use std::ops::Index;
 pub use self::vector::Vector;
 pub use self::point::Point;
 pub use self::line::Line;
+pub use self::rectangle::Rectangle;
 
 pub mod vector;
 pub mod point;
 pub mod line;
+pub mod rectangle;
 pub mod distance;
 
 static EPS : f64 = 0.00001f64;

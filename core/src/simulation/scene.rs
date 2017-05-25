@@ -7,6 +7,7 @@ use ::simulation::forces::Forces;
 
 use ::utils::linelg::Line;
 use ::utils::linelg::Point;
+use ::utils::linelg::Rectangle;
 use ::utils::linelg::distance::DistanceTo; 
 pub const APPROX_PERSON_RADIUS: f64 = 0.4_f64;
 
@@ -31,18 +32,32 @@ struct SpawnArea {
     ticks_to_next_spawn: u16,
 }
 
+#[derive(Debug,Clone)]
 pub struct Area {
     pub p0: Point, pub p1: Point,
     pub sequence_no: u8,
+    rectangle: Rectangle,
 }
 
 impl Area {
+    fn new(p0: Point, p1: Point, sequence_no: u8) -> Area {
+        let rectangle = Rectangle::new_from_raw(
+            p0.x, p0.y, p1.x, p1.y,
+        );
+        Area{p0: p0, p1: p1, sequence_no: sequence_no, rectangle: rectangle}
+    }
+
+    pub fn nearest_point(&self, other: &Point) -> Point {
+        other.nearest_point(&self.rectangle)
+    }
+
     fn random_inside(&self) -> Point {
         Point::new(
             ::utils::distributions::generate_uniform(self.p0.x, self.p1.x),
             ::utils::distributions::generate_uniform(self.p0.y, self.p1.y)
         )
     }
+
 }
 
 impl Scene {
@@ -75,18 +90,23 @@ impl Scene {
         let mut paths = Vec::new();
         for scene_spawn_area in spawn_areas.iter() {
             let id = scene_spawn_area.id;
-            let spawn_area = SpawnArea{ area: Area{p0: Point::new(scene_spawn_area.x0 as f64, scene_spawn_area.y0 as f64),
-                                                   p1: Point::new(scene_spawn_area.x1 as f64, scene_spawn_area.y1 as f64),
-                                                   sequence_no: 0 },
+            let area = Area::new(
+                Point::new(scene_spawn_area.x0 as f64, scene_spawn_area.y0 as f64),
+                Point::new(scene_spawn_area.x1 as f64, scene_spawn_area.y1 as f64),
+                0
+            );
+            let spawn_area = SpawnArea{ area: area,
                                         rate: spawn_rate,
                                         ticks_to_next_spawn: 1 };
 
             let mut parsed_target_areas : Vec<Area> = Vec::new();
             for scene_target_area in target_areas.iter() {
                 if scene_target_area.id == scene_spawn_area.id {
-                    let target_area = Area{ p0: Point::new(scene_target_area.x0 as f64, scene_target_area.y0 as f64),
-                                            p1: Point::new(scene_target_area.x1 as f64, scene_target_area.y1 as f64),
-                                            sequence_no: scene_target_area.sequence_no };
+                    let target_area = Area::new(
+                        Point::new(scene_target_area.x0 as f64, scene_target_area.y0 as f64),
+                        Point::new(scene_target_area.x1 as f64, scene_target_area.y1 as f64),
+                        scene_target_area.sequence_no
+                    );
                     parsed_target_areas.push(target_area)
                 }
             }
@@ -120,10 +140,7 @@ impl Scene {
 
         let mut coordinates: Option<Point> = None;
         for _i in 1..10 {
-            let try_point = Point::new(
-                ::utils::distributions::generate_uniform(path.spawn_area.area.p0.x, path.spawn_area.area.p1.x),
-                ::utils::distributions::generate_uniform(path.spawn_area.area.p0.y, path.spawn_area.area.p1.y)
-            );
+            let try_point = path.spawn_area.area.random_inside();
             if self.is_free(&try_point) {
                 coordinates = Some(try_point);
                 break;
@@ -132,14 +149,14 @@ impl Scene {
 
         match coordinates {
             Some(point) => {
-                let current_target_point = path.target_areas[0].random_inside();
-                let heading = current_target_point - point;
+                let current_target_area = path.target_areas[0].clone();
+                let heading = current_target_area.p0 - point;
                 let new_person = Person{
                     coordinates: point.clone(),
                     heading: heading.y.atan2(heading.x),
                     path_id: path.id,
                     current_target_index: 0,
-                    current_target_point: current_target_point,
+                    current_target_area: current_target_area,
                     forces_params: forces.generate_person_forces_param()
                 };
                 self.people.push(new_person);
@@ -167,7 +184,7 @@ impl Scene {
                 person.current_target_index += 1;
                 let ref path = self.paths[person.path_id as usize];
                 if (person.current_target_index as usize) < path.target_areas.len() {
-                    person.current_target_point = path.target_areas[person.current_target_index as usize].random_inside();
+                    person.current_target_area = path.target_areas[person.current_target_index as usize].clone();
                     // person has next target, do not filter him
                     Some(person)
                 } else {

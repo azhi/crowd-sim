@@ -3,13 +3,14 @@ use ::utils::linelg::Point;
 
 use ::simulation::forces::PersonForcesParams;
 use ::simulation::scene::Path;
+use ::simulation::scene::Area;
 
 #[derive(Debug,Clone)]
 pub struct Person {
     pub coordinates: Point,
     pub heading: f64,
     pub path_id: u8,
-    pub current_target_point: Point,
+    pub current_target_area: Area,
     pub current_target_index: u16,
     pub forces_params: PersonForcesParams,
 }
@@ -21,7 +22,7 @@ impl Person {
         let INSTANT_HEADING_CHANGE_THRESHOLD: f64 = 10_f64.to_radians();
         let TURN_RATE: f64 = 10_f64.to_radians();
 
-        let target_vector = self.current_target_point - self.coordinates;
+        let target_vector = self.current_target_point() - self.coordinates;
         let target_heading = ::utils::headings::vector_heading(target_vector);
 
         let mut new_heading = ::utils::headings::vector_heading(total_force);
@@ -51,6 +52,10 @@ impl Person {
         };
         self.coordinates = self.coordinates + adjusted_total_force * t;
         self.heading = new_heading;
+    }
+
+    pub fn current_target_point(&self) -> Point {
+        self.current_target_area.nearest_point(&self.coordinates)
     }
 
     pub fn fov_coeff(&self, source: Point) -> f64 {
