@@ -64,16 +64,21 @@ impl Forces {
         let used_forces = vec![
             Force::Target(TargetForce),
             Force::Repulsion(RepulsionForce),
-            Force::Fluctuation(FluctuationForce),
+            // Force::Fluctuation(FluctuationForce),
         ];
         Forces{ used_forces: used_forces, target_speed: target_speed, repulsion_coeff: repulsion_coeff,
                 forward_fov: forward_fov, backward_fov: backward_fov }
     }
 
-    pub fn total_force_for_person(&self, person: &Person, scene: &Scene) -> Vector {
+    pub fn total_force_for_person(&mut self, person: &Person, scene: &Scene) -> Vector {
         let mut total_force = Vector::zero();
         for force in self.used_forces.iter() {
             total_force = total_force + force.force_for_person(person, scene);
+        }
+
+        let force_power = total_force.length().min(person.forces_params.target_speed * 1.2);
+        if force_power != 0_f64 {
+            total_force = total_force.normalized() * force_power;
         }
         total_force
     }

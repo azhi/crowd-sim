@@ -85,7 +85,6 @@ impl Output {
 
     fn dump_people_location(&self, mut out: &mut Write, people: &Vec<Person>) {
         self.write_u8(&mut out, LOCATIONS_TYPE);
-        // debug!("People {}", people.len());
         self.write_u32(out, people.len() as u32);
         for person in people.iter() {
             self.write_u16(out, person.coordinates.x.round() as u16);

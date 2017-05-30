@@ -12,6 +12,7 @@ pub struct Person {
     pub path_id: u8,
     pub current_target_area: Area,
     pub current_target_index: u16,
+    pub panic_level: f64,
     pub forces_params: PersonForcesParams,
 }
 
@@ -19,7 +20,7 @@ impl Person {
     #[allow(non_snake_case)]
     pub fn move_by(&mut self, total_force: Vector, t: f64) {
         let MAX_HEADING_DIFF_TO_TARGET: f64 = 180_f64.to_radians();
-        let INSTANT_HEADING_CHANGE_THRESHOLD: f64 = 10_f64.to_radians();
+        let INSTANT_HEADING_CHANGE_THRESHOLD: f64 = 45_f64.to_radians();
         let TURN_RATE: f64 = 10_f64.to_radians();
 
         let target_vector = self.current_target_point() - self.coordinates;
@@ -62,11 +63,12 @@ impl Person {
         const SIDE_FOV: f64 = 2_f64;
 
         let direction = source - self.coordinates;
-        let angle = direction.y.atan2(direction.x);
-        let ellipse_coeff = if angle > 0_f64 {
-            ::utils::linelg::ellipse_sqr_radius_at_angle(SIDE_FOV, self.forces_params.forward_fov, angle).sqrt()
+        let source_heading = ::utils::headings::vector_heading(direction);
+        let heading_diff = ::utils::headings::heading_diff(source_heading, self.heading);
+        let ellipse_coeff = if heading_diff.abs() < ::std::f64::consts::PI / 2_f64 {
+            ::utils::linelg::ellipse_sqr_radius_at_angle(SIDE_FOV, self.forces_params.forward_fov, heading_diff).sqrt()
         } else {
-            ::utils::linelg::ellipse_sqr_radius_at_angle(SIDE_FOV, self.forces_params.backward_fov, -angle).sqrt()
+            ::utils::linelg::ellipse_sqr_radius_at_angle(SIDE_FOV, self.forces_params.backward_fov, heading_diff).sqrt()
         };
         let normalization_coeff = SIDE_FOV.max(self.forces_params.forward_fov).max(self.forces_params.backward_fov);
         let fov_coeff = ellipse_coeff / normalization_coeff / 2_f64;
@@ -75,7 +77,8 @@ impl Person {
 
     pub fn reached_destination(&self, path: &Path) -> bool {
         let target = &path.target_areas[self.current_target_index as usize];
-        self.coordinates.x > target.p0.x && self.coordinates.x < target.p1.x &&
-            self.coordinates.y > target.p0.y && self.coordinates.y < target.p1.y
+        let person_radius = ::simulation::scene::APPROX_PERSON_RADIUS;
+        self.coordinates.x + person_radius > target.p0.x && self.coordinates.x - person_radius < target.p1.x &&
+            self.coordinates.y + person_radius > target.p0.y && self.coordinates.y - person_radius < target.p1.y
     }
 }

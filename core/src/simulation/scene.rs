@@ -9,7 +9,7 @@ use ::utils::linelg::Line;
 use ::utils::linelg::Point;
 use ::utils::linelg::Rectangle;
 use ::utils::linelg::distance::DistanceTo; 
-pub const APPROX_PERSON_RADIUS: f64 = 0.4_f64;
+pub const APPROX_PERSON_RADIUS: f64 = 0.3_f64;
 
 pub struct Scene {
     pub people: Vec<Person>,
@@ -150,13 +150,15 @@ impl Scene {
         match coordinates {
             Some(point) => {
                 let current_target_area = path.target_areas[0].clone();
-                let heading = current_target_area.p0 - point;
+                let target = current_target_area.nearest_point(&point);
+                let direction = target - point;
                 let new_person = Person{
                     coordinates: point.clone(),
-                    heading: heading.y.atan2(heading.x),
+                    heading: ::utils::headings::vector_heading(direction),
                     path_id: path.id,
                     current_target_index: 0,
                     current_target_area: current_target_area,
+                    panic_level: 0.5_f64,
                     forces_params: forces.generate_person_forces_param()
                 };
                 self.people.push(new_person);

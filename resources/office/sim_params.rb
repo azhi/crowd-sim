@@ -13,7 +13,7 @@ time do
   # time to end simulation (Float::INFINITY for infinite one), seconds
   end_time Float::INFINITY
   # simulation clock tick time
-  tick 0.1
+  tick 0.05
 end
 
 # spawn area description
@@ -29,19 +29,19 @@ forces do
   # force that pushes man to his target
   target do
     # speed distribution
-    speed{ distribution 'normal'; mean 1.5; std_deviation 0.3 }
+    speed{ distribution 'normal'; mean 1.4; std_deviation 0.3 }
   end
   # force that pushes man apart from each other
   repulsion do
     # force coeff distribution
-    coeff{ distribution 'normal'; mean 0.5; std_deviation 0.01 }
+    coeff{ distribution 'normal'; mean 1.0; std_deviation 0.01 }
   end
 end
 
 # field of view description
 fov do
   forward{ distribution 'normal'; mean 5.0; std_deviation 0.1 }
-  backward{ distribution 'normal'; mean 5.0; std_deviation 0.001 }
+  backward{ distribution 'normal'; mean 0.3; std_deviation 0.001 }
 end
 
 # density map description

@@ -28,6 +28,10 @@ impl Vector {
         let len = self.length();
         Vector { x: self.x / len, y: self.y / len }
     }
+
+    pub fn dot_product(&self, other: &Vector) -> f64 {
+        self.x * other.x + self.y * other.y
+    }
 }
 
 impl Add for Vector {

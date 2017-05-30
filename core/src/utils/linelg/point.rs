@@ -1,7 +1,7 @@
 use std::ops::{Add, Sub, Mul, Div, Neg, Index, IndexMut};
 use utils::linelg::Vector;
 
-#[derive(Debug, Copy, Clone, PartialEq)]
+#[derive(Debug, Copy, Clone, PartialEq, PartialOrd)]
 pub struct Point {
     pub x: f64,
     pub y: f64,

@@ -12,6 +12,7 @@ pub mod point;
 pub mod line;
 pub mod rectangle;
 pub mod distance;
+pub mod intersection;
 
 static EPS : f64 = 0.00001f64;
 

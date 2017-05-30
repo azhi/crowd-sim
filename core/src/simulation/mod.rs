@@ -75,6 +75,8 @@ impl Simulation {
         }
     }
 
+
+
     fn update_state(&mut self) {
         let mut total_forces_for_person = Vec::new();
         total_forces_for_person.reserve(self.scene.people.len());
