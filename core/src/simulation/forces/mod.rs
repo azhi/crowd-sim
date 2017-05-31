@@ -3,12 +3,14 @@ extern crate anymap;
 mod repulsion;
 mod target;
 mod fluctuation;
+mod herding;
 
 use self::anymap::AnyMap;
 
 use self::repulsion::RepulsionForce;
 use self::target::TargetForce;
 use self::fluctuation::FluctuationForce;
+use self::herding::HerdingForce;
 
 use ::simulation::person::Person;
 use ::simulation::scene::Scene;
@@ -34,13 +36,15 @@ pub struct PersonForcesParams {
     pub repulsion_coeff: f64,
     pub forward_fov: f64,
     pub backward_fov: f64,
+    pub herding: f64,
 }
 
 #[derive(Debug)]
 pub enum Force {
     Target(TargetForce),
     Repulsion(RepulsionForce),
-    Fluctuation(FluctuationForce)
+    Fluctuation(FluctuationForce),
+    Herding(HerdingForce),
 }
 
 impl Forceable for Force {
@@ -48,7 +52,8 @@ impl Forceable for Force {
         match self {
             &mut Force::Target(ref mut force) => force.force_for_person(person, scene),
             &mut Force::Repulsion(ref mut force) => force.force_for_person(person, scene),
-            &mut Force::Fluctuation(ref mut force) => force.force_for_person(person, scene)
+            &mut Force::Fluctuation(ref mut force) => force.force_for_person(person, scene),
+            &mut Force::Herding(ref mut force) => force.force_for_person(person, scene),
         }
     }
 }
@@ -65,6 +70,7 @@ impl Forces {
             Force::Target(TargetForce),
             Force::Repulsion(RepulsionForce),
             Force::Fluctuation(FluctuationForce::new()),
+            Force::Herding(HerdingForce),
         ];
         Forces{ used_forces: used_forces, target_speed: target_speed, repulsion_coeff: repulsion_coeff,
                 forward_fov: forward_fov, backward_fov: backward_fov }
@@ -89,11 +95,13 @@ impl Forces {
             repulsion_coeff: ::utils::distributions::generate(&self.repulsion_coeff),
             forward_fov: ::utils::distributions::generate(&self.forward_fov),
             backward_fov: ::utils::distributions::generate(&self.backward_fov),
+            herding: ::utils::distributions::generate_normal(0.1, 0.1),
         };
         res.target_speed = res.target_speed.max(0.1);
         res.repulsion_coeff = res.repulsion_coeff.max(0.01);
         res.forward_fov = res.forward_fov.max(0.01);
         res.backward_fov = res.backward_fov.max(0.01);
+        res.herding = res.herding.max(0.05);
         res
     }
 }
