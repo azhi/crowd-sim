@@ -24,7 +24,7 @@ impl Fluctuation {
         let force = direction.normalized() * power;
 
         let mut duration = (::utils::distributions::generate_uniform(0.0, MAX_DURATION as f64) * person.panic_level * 10.0).round() as u32;
-        duration = std::cmp::max(duration, 1);
+        duration = ::std::cmp::max(duration, 1);
 
         Fluctuation{
             force: force,
