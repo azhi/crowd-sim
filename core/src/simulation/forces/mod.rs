@@ -17,7 +17,7 @@ use ::configuration::DistributionValue;
 use ::utils::linelg::Vector;
 
 pub trait Forceable {
-    fn force_for_person(&self, person: &Person, scene: &Scene) -> Vector;
+    fn force_for_person(&mut self, person: &Person, scene: &Scene) -> Vector;
 }
 
 pub struct Forces {
@@ -44,11 +44,11 @@ pub enum Force {
 }
 
 impl Forceable for Force {
-    fn force_for_person(&self, person: &Person, scene: &Scene) -> Vector {
+    fn force_for_person(&mut self, person: &Person, scene: &Scene) -> Vector {
         match self {
-            &Force::Target(ref force) => force.force_for_person(person, scene),
-            &Force::Repulsion(ref force) => force.force_for_person(person, scene),
-            &Force::Fluctuation(ref force) => force.force_for_person(person, scene)
+            &mut Force::Target(ref mut force) => force.force_for_person(person, scene),
+            &mut Force::Repulsion(ref mut force) => force.force_for_person(person, scene),
+            &mut Force::Fluctuation(ref mut force) => force.force_for_person(person, scene)
         }
     }
 }
@@ -64,7 +64,7 @@ impl Forces {
         let used_forces = vec![
             Force::Target(TargetForce),
             Force::Repulsion(RepulsionForce),
-            // Force::Fluctuation(FluctuationForce),
+            Force::Fluctuation(FluctuationForce::new()),
         ];
         Forces{ used_forces: used_forces, target_speed: target_speed, repulsion_coeff: repulsion_coeff,
                 forward_fov: forward_fov, backward_fov: backward_fov }
@@ -72,7 +72,7 @@ impl Forces {
 
     pub fn total_force_for_person(&mut self, person: &Person, scene: &Scene) -> Vector {
         let mut total_force = Vector::zero();
-        for force in self.used_forces.iter() {
+        for force in self.used_forces.iter_mut() {
             total_force = total_force + force.force_for_person(person, scene);
         }
 

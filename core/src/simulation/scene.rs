@@ -13,6 +13,7 @@ pub const APPROX_PERSON_RADIUS: f64 = 0.3_f64;
 
 pub struct Scene {
     pub people: Vec<Person>,
+    pub last_person_id: u64,
     pub geometry: Vec<Line>,
     paths: Vec<Path>,
     pub scale: f64,
@@ -74,8 +75,8 @@ impl Scene {
         let parsed_geometry = Scene::parse_walls(scene_walls);
         let parsed_paths = Scene::parse_paths(scene_spawn_areas, scene_target_areas, spawn_rate);
 
-        Scene{ people: Vec::new(), geometry: parsed_geometry, paths: parsed_paths,
-               scale: scene_scale, width: scene_width, height: scene_height }
+        Scene{ people: Vec::new(), last_person_id: 0, geometry: parsed_geometry,
+               paths: parsed_paths, scale: scene_scale, width: scene_width, height: scene_height }
     }
 
     fn parse_walls(walls: Vec<::configuration::SceneWall>) -> Vec<Line> {
@@ -153,6 +154,7 @@ impl Scene {
                 let target = current_target_area.nearest_point(&point);
                 let direction = target - point;
                 let new_person = Person{
+                    id: self.last_person_id,
                     coordinates: point.clone(),
                     heading: ::utils::headings::vector_heading(direction),
                     path_id: path.id,
@@ -161,6 +163,7 @@ impl Scene {
                     panic_level: 0.5_f64,
                     forces_params: forces.generate_person_forces_param()
                 };
+                self.last_person_id += 1;
                 self.people.push(new_person);
             },
             None => warn!("Couldn't find a place for a new person in 10 attempts, skipping ...")

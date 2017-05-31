@@ -7,6 +7,7 @@ use ::simulation::scene::Area;
 
 #[derive(Debug,Clone)]
 pub struct Person {
+    pub id: u64,
     pub coordinates: Point,
     pub heading: f64,
     pub path_id: u8,

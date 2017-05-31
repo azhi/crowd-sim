@@ -83,7 +83,7 @@ impl RepulsionForce {
 }
 
 impl Forceable for RepulsionForce {
-    fn force_for_person(&self, person: &Person, scene: &Scene) -> Vector {
+    fn force_for_person(&mut self, person: &Person, scene: &Scene) -> Vector {
         let repulsion_coeff = person.forces_params.repulsion_coeff;
         let mut force = Vector::zero();
         for obstacle in scene.geometry.iter() {
