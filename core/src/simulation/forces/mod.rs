@@ -14,6 +14,7 @@ use self::herding::HerdingForce;
 
 use ::simulation::person::Person;
 use ::simulation::scene::Scene;
+use ::simulation::scene::Area;
 
 use ::configuration::DistributionValue;
 use ::utils::linelg::Vector;
@@ -70,23 +71,30 @@ impl Forces {
             Force::Target(TargetForce),
             Force::Repulsion(RepulsionForce),
             Force::Fluctuation(FluctuationForce::new()),
-            Force::Herding(HerdingForce),
+            Force::Herding(HerdingForce::new()),
         ];
         Forces{ used_forces: used_forces, target_speed: target_speed, repulsion_coeff: repulsion_coeff,
                 forward_fov: forward_fov, backward_fov: backward_fov }
     }
 
-    pub fn total_force_for_person(&mut self, person: &Person, scene: &Scene) -> Vector {
+    pub fn total_force_for_person(&mut self, person: &Person, scene: &Scene) -> (Vector, Option<(u8, Area, u16)>) {
         let mut total_force = Vector::zero();
+
+        let mut path_change_option: Option<(u8, Area, u16)> = None;
+
         for force in self.used_forces.iter_mut() {
             total_force = total_force + force.force_for_person(person, scene);
+            if let &mut Force::Herding(ref herding_force) = force {
+                path_change_option = herding_force.path_change.clone();
+            };
         }
 
         let force_power = total_force.length().min(person.forces_params.target_speed * 1.2);
         if force_power != 0_f64 {
             total_force = total_force.normalized() * force_power;
         }
-        total_force
+
+        (total_force, path_change_option)
     }
 
     pub fn generate_person_forces_param(&self) -> PersonForcesParams {

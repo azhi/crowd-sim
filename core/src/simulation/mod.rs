@@ -7,10 +7,13 @@ mod forces;
 mod time;
 mod statistics;
 
+use std::collections::HashMap;
+
 use self::anymap::AnyMap;
 
 use self::forces::Forces;
 use self::scene::Scene;
+use self::scene::Area;
 use self::time::Time;
 use self::statistics::Statistics;
 
@@ -80,16 +83,27 @@ impl Simulation {
     fn update_state(&mut self) {
         let mut total_forces_for_person = Vec::new();
         total_forces_for_person.reserve(self.scene.people.len());
+        let mut path_changes: HashMap<u64, (u8, Area, u16)> = HashMap::new();
+
         for person in self.scene.people.iter() {
-            let mut total_force = self.forces.total_force_for_person(person, &self.scene);
+            let (mut total_force, path_change_option) = self.forces.total_force_for_person(person, &self.scene);
             total_force = total_force / self.scene.scale;
             total_forces_for_person.push(total_force);
+            if let Some(path_change) = path_change_option {
+                path_changes.insert(person.id, path_change);
+            }
         }
         for (person, total_force) in self.scene.people.iter_mut().zip(total_forces_for_person.iter()) {
             if total_force.length() < 0.01_f64 {
                 warn!("Small total force: {}", total_force.length());
             }
             person.move_by(*total_force, self.time.tick);
+            if let Some((path_id, target_area, target_index)) = path_changes.remove(&person.id) {
+                debug!("Person #{} copied path id #{}", person.id, path_id);
+                person.path_id = path_id;
+                person.current_target_area = target_area;
+                person.current_target_index = target_index;
+            }
         }
 
         match self.sim_type {
