@@ -90,6 +90,7 @@ impl Output {
             self.write_u16(out, person.coordinates.x.round() as u16);
             self.write_u16(out, person.coordinates.y.round() as u16);
             self.write_f64(out, person.heading);
+            self.write_f64(out, person.panic_level);
         }
     }
 

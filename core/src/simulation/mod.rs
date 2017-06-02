@@ -78,6 +78,18 @@ impl Simulation {
 
 
     fn update_state(&mut self) {
+        self.calculate_forces_and_move();
+        self.calculate_panic_level();
+
+        match self.sim_type {
+            SimType::Escape => (),
+            _ => self.scene.spawn_people(&self.forces, self.time.tick)
+        }
+        let reached_destination_people = self.scene.process_reached_destination_people();
+        self.statistics.update_from_reached_destination_people(reached_destination_people, self.time.current_time);
+    }
+
+    fn calculate_forces_and_move(&mut self) {
         let mut total_forces_for_person = Vec::new();
         total_forces_for_person.reserve(self.scene.people.len());
         for person in self.scene.people.iter() {
@@ -91,13 +103,54 @@ impl Simulation {
             }
             person.move_by(*total_force, self.time.tick);
         }
+    }
 
-        match self.sim_type {
-            SimType::Escape => (),
-            _ => self.scene.spawn_people(&self.forces, self.time.tick)
+    fn calculate_panic_level(&mut self) {
+        const K_INITIAL_PANIC: f64 = 1.0_f64;
+        const K_SPREAD_PANIC: f64 = 1.0_f64;
+        const K_DECAY_PANIC: f64 = 0.01_f64;
+        const PANIC_FOV_DISTANCE: f64 = 3f64;
+
+        let mut panic_levels = Vec::new();
+        panic_levels.reserve(self.scene.people.len());
+        for person in self.scene.people.iter() {
+            let mut panic_from_sources = 0_f64;
+            let mut n = 0;
+            for panic_source in self.scene.panic_sources.iter() {
+                if (panic_source.coordinates - person.coordinates).length() < panic_source.radius {
+                    panic_from_sources += panic_source.power;
+                    n += 1;
+                }
+            }
+            if n != 0 {
+                panic_from_sources = K_INITIAL_PANIC * panic_from_sources / (n as f64);
+            }
+
+            let mut panic_from_herding = 0_f64;
+            n = 0;
+            for other_person in self.scene.people.iter() {
+                if (person.coordinates - other_person.coordinates).length() * self.scene.scale < PANIC_FOV_DISTANCE {
+                    panic_from_herding += other_person.panic_level;
+                    n += 1;
+                }
+            }
+            if n != 0 {
+                panic_from_herding = K_SPREAD_PANIC * panic_from_herding / (n as f64);
+            }
+
+            let desired_panic_level = (panic_from_sources + panic_from_herding).max(0_f64).min(1_f64);
+
+            let new_panic_level = if desired_panic_level >= person.panic_level {
+                desired_panic_level
+            } else {
+                person.panic_level - K_DECAY_PANIC * (person.panic_level - desired_panic_level)
+            };
+            panic_levels.push(new_panic_level);
+        };
+
+        for (person, panic_level) in self.scene.people.iter_mut().zip(panic_levels.iter()) {
+            person.panic_level = *panic_level;
         }
-        let reached_destination_people = self.scene.process_reached_destination_people();
-        self.statistics.update_from_reached_destination_people(reached_destination_people, self.time.current_time);
     }
 }
 

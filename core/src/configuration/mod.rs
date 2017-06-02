@@ -63,6 +63,12 @@ pub struct SceneTargetArea {
 #[derive(Debug,Clone)]
 pub struct SceneTargetAreas(pub Vec<SceneTargetArea>);
 #[derive(Debug,Clone)]
+pub struct ScenePanicSource {
+    pub x : u16, pub y : u16, pub r : u16, pub power: f64,
+}
+#[derive(Debug,Clone)]
+pub struct ScenePanicSources(pub Vec<ScenePanicSource>);
+#[derive(Debug,Clone)]
 pub struct SceneFilename(pub String);
 
 #[derive(Debug,Clone)]
@@ -123,8 +129,6 @@ fn parse_single_item(config: &mut AnyMap, file: &mut Read, buf : &mut [u8]) -> b
             0x06 => parse_density_map_item(config, file, buf),
             _ => panic!("Unknown section in config: {}", section)
         }
-        // let str_value = str::from_utf8(&[116, 116, 101, 115, 116]).unwrap().to_string().clone();
-        // config.insert(SceneFile(str_value));
         true
     } else {
         false
@@ -200,6 +204,25 @@ fn parse_scene_item(config: &mut AnyMap, file: &mut Read, buf : &mut [u8]) {
             target_areas_vec.push(SceneTargetArea{ x0: x0, y0: y0, x1: x1, y1: y1, id: id, sequence_no: seq_no, last: last});
             config.insert(SceneTargetAreas(target_areas_vec));
             debug!("Parsed SceneTargetArea: {} {} {} {} {} {} {}", x0, y0, x1, y1, id, seq_no, last);
+        },
+        0x04 => {
+            let x = parse_u16(file, buf);
+            let y = parse_u16(file, buf);
+            let r = parse_u16(file, buf);
+            let int_power = parse_u8(file, buf);
+            let power = (int_power as f64) / 255_f64;
+
+            let mut panic_sources_vec = match config.remove::<ScenePanicSources>() {
+                Some(scene_panic_sources) => {
+                    let ScenePanicSources(vec) = scene_panic_sources;
+                    vec
+                },
+                None => Vec::new()
+            };
+
+            panic_sources_vec.push(ScenePanicSource{ x: x, y: y, r: r, power: power});
+            config.insert(ScenePanicSources(panic_sources_vec));
+            debug!("Parsed ScenePanicSource: {} {} {} {}", x, y, r, power);
         },
         0x11 => {
             let scene_width = parse_u16(file, buf);

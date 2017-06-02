@@ -15,10 +15,17 @@ pub struct Scene {
     pub people: Vec<Person>,
     pub last_person_id: u64,
     pub geometry: Vec<Line>,
+    pub panic_sources: Vec<PanicSource>,
     paths: Vec<Path>,
     pub scale: f64,
     pub width: u16,
     pub height: u16,
+}
+
+pub struct PanicSource {
+    pub coordinates: Point,
+    pub radius: f64,
+    pub power: f64,
 }
 
 pub struct Path {
@@ -68,15 +75,25 @@ impl Scene {
         let scene_scale = config!(configuration, SceneScale);
 
         let scene_walls = config!(configuration, SceneWalls);
+        let scene_panic_sources = config!(configuration, ScenePanicSources);
         let scene_spawn_areas = config!(configuration, SceneSpawnAreas);
         let scene_target_areas = config!(configuration, SceneTargetAreas);
         let spawn_rate = config!(configuration, SpawnRate);
 
         let parsed_geometry = Scene::parse_walls(scene_walls);
+        let parsed_panic_sources = Scene::parse_panic_sources(scene_panic_sources);
         let parsed_paths = Scene::parse_paths(scene_spawn_areas, scene_target_areas, spawn_rate);
 
-        Scene{ people: Vec::new(), last_person_id: 0, geometry: parsed_geometry,
+        Scene{ people: Vec::new(), last_person_id: 0, geometry: parsed_geometry, panic_sources: parsed_panic_sources,
                paths: parsed_paths, scale: scene_scale, width: scene_width, height: scene_height }
+    }
+
+    fn parse_panic_sources(scene_panic_sources: Vec<::configuration::ScenePanicSource>) -> Vec<PanicSource> {
+        let mut panic_sources = Vec::new();
+        for ps in scene_panic_sources.iter() {
+            panic_sources.push(PanicSource{coordinates: Point::new(ps.x as f64, ps.y as f64), radius: ps.r as f64, power: ps.power})
+        }
+        panic_sources
     }
 
     fn parse_walls(walls: Vec<::configuration::SceneWall>) -> Vec<Line> {
@@ -160,7 +177,7 @@ impl Scene {
                     path_id: path.id,
                     current_target_index: 0,
                     current_target_area: current_target_area,
-                    panic_level: 0.5_f64,
+                    panic_level: 0.0_f64,
                     forces_params: forces.generate_person_forces_param()
                 };
                 self.last_person_id += 1;

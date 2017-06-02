@@ -53,23 +53,24 @@ void controller_main_loop(struct ControllerData* controller_data)
 
   while (!feof(stdin) && !statistics_mode) {
     wait_for_stdin();
-    sdl_clr(&controller_data->sdl_data);
-
-    sdl_draw_texture(&controller_data->sdl_data, controller_data->sdl_data.background);
-
     unsigned char message_type = controller_read_byte();
     switch(message_type) {
     case CURRENT_TIME_TYPE:
       data_time = controller_read_double();
       break;
     case LOCATIONS_TYPE:
+      sdl_clr(&controller_data->sdl_data);
+
+      sdl_draw_texture(&controller_data->sdl_data, controller_data->sdl_data.background);
+
       {
         long people_count = controller_read_long();
         for (long i = 0; i < people_count; i++) {
           short person_x = controller_read_short();
           short person_y = controller_read_short();
           double heading = controller_read_double();
-          sdl_draw_person(&controller_data->sdl_data, person_x, person_y, heading);
+          double panic_level = controller_read_double();
+          sdl_draw_person(&controller_data->sdl_data, person_x, person_y, heading, panic_level);
         }
       }
       break;

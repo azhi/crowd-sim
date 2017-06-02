@@ -8,7 +8,6 @@ use ::simulation::scene::Scene;
 use ::utils::linelg::distance::DistanceTo;
 use ::utils::linelg::Vector;
 use ::utils::linelg::Point;
-use ::utils::linelg::Line;
 
 #[derive(Debug)]
 pub struct RepulsionForce;
@@ -40,7 +39,6 @@ impl RepulsionForce {
 
     fn geom_physical_repulsion<T: Debug>(&self, person: &Person, obstacle: &T, scene_scale: f64) -> Vector where Point: DistanceTo<T> {
         const K_PHYS: f64 = 5_f64;
-        const K_TANGENT: f64 = 5_f64;
 
         let repulsion_point = person.coordinates.nearest_point(obstacle);
         let direction = repulsion_point - person.coordinates;

@@ -74,7 +74,7 @@ void sdl_draw_texture(struct SDLData* sdl_data, SDL_Texture* texture)
   SDL_RenderCopy(sdl_data->renderer, texture, NULL, &dst);
 }
 
-void sdl_draw_person(struct SDLData* sdl_data, int x, int y, double heading)
+void sdl_draw_person(struct SDLData* sdl_data, int x, int y, double heading, double panic_level)
 {
   double angle = heading * 180 / M_PI + 90;
   long angle_int = lround(angle);
@@ -94,7 +94,9 @@ void sdl_draw_person(struct SDLData* sdl_data, int x, int y, double heading)
   dst.x = x - dst.w / 2;
   dst.y = y - dst.h / 2;
 
+  SDL_SetTextureColorMod(texture, 255, 255 * (1 - panic_level), 255 * (1 - panic_level));
   SDL_RenderCopy(sdl_data->renderer, texture, NULL, &dst);
+  SDL_SetTextureColorMod(texture, 255, 255, 255);
 }
 
 void sdl_set_density(struct SDLData* sdl_data, int x, int y, double density)

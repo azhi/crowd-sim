@@ -6,7 +6,7 @@ module Sections
   class Scene < Base
     SCENE_SECTION = 0x01
     SCENE_ELEMENTS = {
-      'wall' => 0x01, 'spawn-area' => 0x02, 'target-area' => 0x03,
+      'wall' => 0x01, 'spawn-area' => 0x02, 'target-area' => 0x03, 'panic-source' => 0x04,
       'width' => 0x11, 'height' => 0x12, 'scale' => 0x13,
       'file_name' => 0xFF
     }
@@ -17,6 +17,8 @@ module Sections
       'spawn-area' => 'S>S>S>S>C',
       # x0 y0 x1 y1 id seq_no(7bit)|last(1bit)
       'target-area' => 'S>S>S>S>CC',
+      # x y r power
+      'panic-source' => 'S>S>S>C',
 
       'width' => 'S>', 'height' => 'S>',
       'scale' => 'E',
@@ -47,6 +49,13 @@ module Sections
       geometry = []
       geometry << ['width', scene_data['width'].to_i]
       geometry << ['height', scene_data['height'].to_i]
+
+      Array[scene_data['circle']].select{ |circle| circle['x_csim_class'] == 'panic-source' }.each do |ps|
+        geometry << [
+          'panic-source',
+          [ps['cx'], ps['cy'], ps['r'], ps['x_csim_power']].map(&:to_i)
+        ]
+      end
 
       scene_data['line'].select{ |line| line['x_csim_class'] == 'wall' }.each do |wall|
         geometry << [
