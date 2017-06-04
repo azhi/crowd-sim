@@ -112,6 +112,26 @@ fn parse_config_file(config: &mut AnyMap, file: &mut Read) {
     while !done {
         done = !parse_single_item(config, file, &mut buf);
     }
+
+    let panic_sources_vec = match config.remove::<ScenePanicSources>() {
+        Some(scene_panic_sources) => {
+            let ScenePanicSources(vec) = scene_panic_sources;
+            vec
+        },
+        None => Vec::new()
+    };
+    config.insert(ScenePanicSources(panic_sources_vec));
+
+    let walls_vec = match config.remove::<SceneWalls>() {
+        Some(scene_walls) => {
+            let SceneWalls(vec) = scene_walls;
+            vec
+        },
+        None => Vec::new()
+    };
+    config.insert(SceneWalls(walls_vec));
+
+
     info!("Config readed.");
 }
 

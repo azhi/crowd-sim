@@ -16,14 +16,14 @@ struct Fluctuation {
 impl Fluctuation {
     pub fn new(person: &Person) -> Fluctuation {
         const MAX_POWER: f64 = 1_f64;
-        const MAX_DURATION: u32 = 10_u32;
+        const MAX_DURATION: u32 = 5_u32;
 
         let direction = Vector::new(::utils::distributions::generate_uniform(0.0, 1.0),
                                     ::utils::distributions::generate_uniform(0.0, 1.0));
         let power = ::utils::distributions::generate_uniform(0.0, MAX_POWER) * person.panic_level;
         let force = direction.normalized() * power;
 
-        let mut duration = (::utils::distributions::generate_uniform(0.0, MAX_DURATION as f64) * person.panic_level * 10.0).round() as u32;
+        let mut duration = (::utils::distributions::generate_uniform(0.0, MAX_DURATION as f64) * person.panic_level * 20.0).round() as u32;
         duration = ::std::cmp::max(duration, 1);
 
         Fluctuation{
@@ -46,7 +46,7 @@ impl FluctuationForce {
 
 impl Forceable for FluctuationForce {
     fn force_for_person(&mut self, person: &Person, _scene: &Scene) -> Vector {
-        const MAX_EMERGE_PROBABILITY: f64 = 0.001_f64;
+        const MAX_EMERGE_PROBABILITY: f64 = 0.005_f64;
 
         let (mut force, create_new_fluctuation, remove_fluctuation) = match self.active_fluctuations.get_mut(&person.id) {
             Some(fluctuation) => {

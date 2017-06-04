@@ -95,7 +95,7 @@ impl Forces {
             repulsion_coeff: ::utils::distributions::generate(&self.repulsion_coeff),
             forward_fov: ::utils::distributions::generate(&self.forward_fov),
             backward_fov: ::utils::distributions::generate(&self.backward_fov),
-            herding: ::utils::distributions::generate_normal(0.1, 0.1),
+            herding: ::utils::distributions::generate_normal(0.2, 0.3),
         };
         res.target_speed = res.target_speed.max(0.1);
         res.repulsion_coeff = res.repulsion_coeff.max(0.01);

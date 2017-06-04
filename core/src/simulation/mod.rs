@@ -109,7 +109,7 @@ impl Simulation {
         const K_INITIAL_PANIC: f64 = 1.0_f64;
         const K_SPREAD_PANIC: f64 = 1.0_f64;
         const K_DECAY_PANIC: f64 = 0.01_f64;
-        const PANIC_FOV_DISTANCE: f64 = 3f64;
+        const PANIC_FOV_DISTANCE: f64 = 4f64;
 
         let mut panic_levels = Vec::new();
         panic_levels.reserve(self.scene.people.len());

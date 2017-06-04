@@ -50,20 +50,20 @@ module Sections
       geometry << ['width', scene_data['width'].to_i]
       geometry << ['height', scene_data['height'].to_i]
 
-      Array[scene_data['circle']].select{ |circle| circle['x_csim_class'] == 'panic-source' }.each do |ps|
+      to_array(scene_data['circle']).select{ |circle| circle['x_csim_class'] == 'panic-source' }.each do |ps|
         geometry << [
           'panic-source',
           [ps['cx'], ps['cy'], ps['r'], ps['x_csim_power']].map(&:to_i)
         ]
       end
 
-      scene_data['line'].select{ |line| line['x_csim_class'] == 'wall' }.each do |wall|
+      to_array(scene_data['line']).select{ |line| line['x_csim_class'] == 'wall' }.each do |wall|
         geometry << [
           'wall',
           [wall['x1'], wall['y1'], wall['x2'], wall['y2']].map(&:to_i)
         ]
       end
-      scene_data['rect'].select{ |rect| rect['x_csim_class'] == 'spawn-area' }.each do |spawn|
+      to_array(scene_data['rect']).select{ |rect| rect['x_csim_class'] == 'spawn-area' }.each do |spawn|
         geometry << [
           'spawn-area',
           [spawn['x'].to_i, spawn['y'].to_i,
@@ -71,7 +71,7 @@ module Sections
            spawn['x_csim_id'].to_i]
         ]
       end
-      scene_data['rect'].select{ |rect| rect['x_csim_class'] == 'target-area' }.each do |target|
+      to_array(scene_data['rect']).select{ |rect| rect['x_csim_class'] == 'target-area' }.each do |target|
         geometry << [
           'target-area',
           [target['x'].to_i, target['y'].to_i,
@@ -82,5 +82,14 @@ module Sections
       end
       data['geometry'] = geometry
     end
+
+    private
+      def to_array(obj)
+        if obj
+          obj.kind_of?(Array) && obj || Array[obj]
+        else
+          []
+        end
+      end
   end
 end
