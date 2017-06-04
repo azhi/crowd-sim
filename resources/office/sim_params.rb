@@ -29,7 +29,7 @@ forces do
   # force that pushes man to his target
   target do
     # speed distribution
-    speed{ distribution 'normal'; mean 1.4; std_deviation 0.3 }
+    speed{ distribution 'normal'; mean 1.5; std_deviation 0.2 }
   end
   # force that pushes man apart from each other
   repulsion do
@@ -46,7 +46,7 @@ end
 
 # density map description
 density_map do
-  enabled true
+  enabled false
   min_threshold 4.0
   max_threshold 10.0
 end
